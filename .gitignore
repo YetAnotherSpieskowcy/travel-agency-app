@@ -1,0 +1,12 @@
+# User-specific stuff:
+.idea/
+*.iws
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# archives
+*.zip
