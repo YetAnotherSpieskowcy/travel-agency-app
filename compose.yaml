@@ -1,0 +1,14 @@
+services:
+  proxy:
+    image: nginx
+    ports:
+      - "8080:80"
+    build: 
+      context: ./proxy
+    develop:
+      watch:
+        - path: ./proxy/www
+          action: sync
+          target: /data/www
+  dummy: # To be replaced by api gateway
+    image: nginx
