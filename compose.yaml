@@ -5,9 +5,13 @@ services:
       - "8080:80"
     build: 
       context: ./proxy
-    develop:
+      additional_contexts:
+        - static=./static
+    depends_on:
+      - dummy
+    develop: # To be removed before deployment
       watch:
-        - path: ./proxy/www
+        - path: ./static/html
           action: sync
           target: /data/www
   dummy: # To be replaced by api gateway
