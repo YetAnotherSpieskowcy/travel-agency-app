@@ -1,6 +1,6 @@
 services:
   proxy:
-    image: nginx
+    image: 10.40.71.55:5000/rsww_184529_proxy
     ports:
       - "8080:80"
     build: 
