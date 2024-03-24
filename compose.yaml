@@ -1,0 +1,18 @@
+services:
+  proxy:
+    image: 10.40.71.55:5000/rsww_184529_proxy
+    ports:
+      - "8080:80"
+    build: 
+      context: ./proxy
+      additional_contexts:
+        - static=./static
+    depends_on:
+      - dummy
+    develop: # To be removed before deployment
+      watch:
+        - path: ./static/html
+          action: sync
+          target: /data/www
+  dummy: # To be replaced by api gateway
+    image: nginx
