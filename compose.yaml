@@ -14,5 +14,11 @@ services:
         - path: ./static/html
           action: sync
           target: /data/www
+  broker:
+    image: 10.40.71.55:5000/rsww_184529_broker
+    build:
+      context: ./broker
   dummy: # To be replaced by api gateway
     image: nginx
+    depends_on:
+      - broker
