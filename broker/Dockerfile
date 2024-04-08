@@ -1,5 +1,7 @@
-FROM rabbitmq:3.13-alpine
+FROM rabbitmq:3.13-management-alpine
 
 # No special configuration needed yet...
 #
 # COPY rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+
+HEALTHCHECK --interval=3s CMD rabbitmq-diagnostics -q ping || exit 1
