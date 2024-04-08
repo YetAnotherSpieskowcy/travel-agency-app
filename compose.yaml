@@ -21,4 +21,5 @@ services:
   dummy: # To be replaced by api gateway
     image: nginx
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
