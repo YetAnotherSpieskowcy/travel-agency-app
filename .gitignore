@@ -1,7 +1,30 @@
-# User-specific stuff:
+### User-specific stuff ###
+
+# JetBrains
 .idea/
 *.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# VS Code
 .vscode/
+
+# Spring Tool Suite plugin for VS Code
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# Sublime Text
 *.sublime-project
 *.sublime-workspace
 
@@ -10,3 +33,11 @@
 
 # archives
 *.zip
+
+# Kotlin and Gradle
+.gradle
+.kotlin
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
