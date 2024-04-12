@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ApiGatewayApplication
 
 fun main(args: Array<String>) {
-	runApplication<ApiGatewayApplication>(*args)
+    runApplication<ApiGatewayApplication>(*args)
 }
