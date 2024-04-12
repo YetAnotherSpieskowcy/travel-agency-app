@@ -1,3 +1,4 @@
+# build stage
 FROM eclipse-temurin:21-jdk-alpine as build
 WORKDIR /workspace/app
 
@@ -5,6 +6,7 @@ COPY . /workspace/app
 RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
 
+# actual application image
 FROM eclipse-temurin:21-jdk-alpine
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/build/dependency
