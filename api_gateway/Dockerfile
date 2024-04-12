@@ -11,6 +11,9 @@ FROM eclipse-temurin:21-jdk-alpine
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/build/dependency
 
+RUN addgroup java && adduser -SG java java
+USER java
+
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
