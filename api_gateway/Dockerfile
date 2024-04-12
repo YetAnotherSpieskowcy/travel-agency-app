@@ -4,7 +4,8 @@ WORKDIR /workspace/app
 
 COPY . /workspace/app
 RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
+WORKDIR /workspace/app/build/dependency
+RUN jar -xf ../libs/*-SNAPSHOT.jar
 
 # actual application image
 FROM eclipse-temurin:21-jdk-alpine
