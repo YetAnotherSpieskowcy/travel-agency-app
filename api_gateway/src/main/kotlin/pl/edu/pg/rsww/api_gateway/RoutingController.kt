@@ -21,6 +21,11 @@ public class RoutingController(
     @Autowired
     private val template: RabbitTemplate,
 ) {
+    @RequestMapping("/api")
+    fun index(): String {
+        // have at least one endpoint that indicates that API gateway itself is fine
+        return "Hello, I'm alive!"
+    }
 
     @RequestMapping("/api/{serviceName}/{*path}")
     fun serviceRouter(

@@ -20,3 +20,5 @@ COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
 ENTRYPOINT ["java", "-cp", "app:app/lib/*", "pl.edu.pg.rsww.api_gateway.ApiGatewayApplicationKt"]
+
+HEALTHCHECK CMD wget -O - http://127.0.0.1:8080/api || exit 1
