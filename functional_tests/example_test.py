@@ -24,4 +24,3 @@ class ExampeTest(unittest.TestCase):
         assert (
             self.driver.find_element(by=By.XPATH, value="//h1").text == "Hello World!"
         )
-        
