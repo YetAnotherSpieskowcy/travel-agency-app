@@ -14,7 +14,7 @@ When build finishes start all containers using the following command.
 docker compose up
 ```
 
-Website will be available at port 8080.
+Site will be available at port 8080.
 
 ## See also
 
