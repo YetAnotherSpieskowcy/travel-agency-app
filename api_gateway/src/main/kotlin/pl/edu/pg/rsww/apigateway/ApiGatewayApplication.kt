@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.api_gateway
+package pl.edu.pg.rsww.apigateway
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.api_gateway
+package pl.edu.pg.rsww.apigateway
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.beans.factory.annotation.Autowired
