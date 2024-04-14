@@ -41,3 +41,14 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+# Python
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+.pytest_cache
+.venv
+.idea
+
+# Installer logs
+pip-log.txt
