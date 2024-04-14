@@ -21,4 +21,4 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
 ENTRYPOINT ["java", "-cp", "app:app/lib/*", "pl.edu.pg.rsww.apigateway.ApiGatewayApplicationKt"]
 
-HEALTHCHECK CMD wget -O - http://127.0.0.1:8080/api || exit 1
+HEALTHCHECK CMD wget -O - http://127.0.0.1:8080/health || exit 1

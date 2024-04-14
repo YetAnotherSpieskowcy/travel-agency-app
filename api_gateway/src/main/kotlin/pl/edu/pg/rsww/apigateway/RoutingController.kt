@@ -20,9 +20,10 @@ public class RoutingController(
     @Autowired
     private val template: RabbitTemplate,
 ) {
-    @RequestMapping("/api")
+    @RequestMapping("/health")
     fun index(): String {
-        // have at least one endpoint that indicates that API gateway itself is fine
+        // have one internal (outside /api/*) endpoint that indicates
+        // that the API gateway itself is fine
         return "Hello, I'm alive!"
     }
 
