@@ -1,3 +1,4 @@
+# flake8: noqa E731 not aplicable when working with selenium
 import os
 import unittest
 
