@@ -24,5 +24,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           FILTER_REGEX_EXCLUDE: ".*/gradlew"
           VALIDATE_PYTHON_PYLINT: false
+          VALIDATE_HTML: false # HtmlHint does not allow to selectively ignore the rules
           DEFAULT_BRANCH: origin/main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
