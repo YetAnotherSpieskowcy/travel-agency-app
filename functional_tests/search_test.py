@@ -28,7 +28,7 @@ class SearchTest(unittest.TestCase):
         results = lambda: self.driver.find_element(By.ID, "results")
         assert (  # Test if list is empty
             results().find_element(By.TAG_NAME, "p").text
-            == "Start typing te see the results..."
+            == "Start typing to see the results..."
         )
         search_bar = lambda: self.driver.find_element(By.NAME, "search")
         search_bar().send_keys("test search string")
