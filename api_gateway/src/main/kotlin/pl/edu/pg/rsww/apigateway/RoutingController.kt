@@ -15,16 +15,44 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 public class RoutingController(
-    @Value("\${serviceQueues}")
-    private val serviceQueues: Array<String>,
-    @Autowired
-    private val template: RabbitTemplate,
+    @Value("\${serviceQueues}") private val serviceQueues: Array<String>,
+    @Autowired private val template: RabbitTemplate,
 ) {
     @RequestMapping("/health")
     fun index(): String {
         // have one internal (outside /api/*) endpoint that indicates
         // that the API gateway itself is fine
         return "Hello, I'm alive!"
+    }
+
+    @RequestMapping("/api/mocked/{*path}")
+    fun mock(
+        @PathVariable path: String,
+        @RequestParam params: Map<String, String>,
+    ): ResponseEntity<String> {
+        val builder = ResponseEntity.status(200)
+        if (path.contains("get_trips")) {
+            val n: Int = params["n"]?.toInt() ?: 0
+            val next = n + 1
+
+            return builder.body(
+                """{
+	  "name": "${params["search"]}",
+	  "n": $next,
+	  "id": $n,
+	  "description": "Hello, world!"
+      }""",
+            )
+        }
+        if (path.contains("trip")) {
+            return builder.body(
+                """{
+	  "name": "Trip no. ${params["id"]}",
+	  "description": "A slightly longer description for trip number ${params["id"]}"
+      }""",
+            )
+        }
+        return builder.body("""{ "error": "404" }""")
     }
 
     @RequestMapping("/api/{serviceName}/{*path}")
@@ -51,17 +79,11 @@ public class RoutingController(
 
         val exchangeName = "$serviceName.requests"
         val rawResponse =
-            template.convertSendAndReceive(
-                exchangeName,
-                exchangeName,
-                rawMsg as Any,
-            ) as String
+            template.convertSendAndReceive(exchangeName, exchangeName, rawMsg as Any) as String
         val resp = Json.decodeFromString<ResponseMessage>(rawResponse)
 
         var builder = ResponseEntity.status(resp.status)
-        resp.headers.forEach { key, value ->
-            builder = builder.header(key, value)
-        }
+        resp.headers.forEach { key, value -> builder = builder.header(key, value) }
         return builder.body(resp.body)
     }
 }

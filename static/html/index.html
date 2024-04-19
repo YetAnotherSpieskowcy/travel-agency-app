@@ -1,9 +1,56 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <title>Travel agency app</title>
+</head>
 
 <body>
-  <h1>Hello World!</h1>
+    <script src="https://unpkg.com/htmx.org@1.9.11"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.11/dist/ext/client-side-templates.js"></script>
+    <script src="https://unpkg.com/mustache@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <div id="container" hx-get="/search.html" hx-trigger="load" class="md:container md:mx-auto px-8"
+        hx-ext="client-side-templates">
+
+    </div>
+    <template id="trip">
+        <div class="my-3 rounded-md outline-1 box-border border-2 shadow-md flex justify-between gap-x-6 py-5 flex min-w-0 gap-x-4 space-x-4 px-5"
+            hx-get="/api/mocked/get_trips/?n={{n}}" hx-include="[name='search']" hx-trigger="revealed" hx-swap="afterend"
+            mustache-template="trip">
+            <div>
+                <p class="break-afer-auto text-sm font-semibold leading-6 text-gray-900">
+                    {{name}} </p>
+                <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{description}}</p>
+            </div>
+            <div>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/api/mocked/trip/?id={{id}}" hx-target="#container" mustache-template="trip_details"
+                    hx-swap="innerHTML">Details</button>
+            </div>
+        </div>
+    </template>
+    <template id="trip_details">
+        <div
+            class="my-3 rounded-md outline-1 box-border border-2 shadow-md flex justify-between gap-x-6 py-5 flex min-w-0 gap-x-4 space-x-4 px-5">
+            <div>
+                <p class="break-afer-auto text-sm font-semibold leading-6 text-gray-900">
+                    {{name}} </p>
+                <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{description}}</p>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/search.html" hx-target="#container">Cancel</button>
+            </div>
+            <div>
+            </div>
+            <div>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Start
+                    reservation</button> <!-- TODO to be implemented -->
+            </div>
+        </div>
+    </template>
 </body>
 
 </html>
