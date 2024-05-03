@@ -23,11 +23,7 @@ services:
     build:
       context: ./api_gateway
     env_file:
-      - path: ./default.env
-        required: true
-      # allow setting up non-default credentials
-      - path: ./production.env
-        required: false
+      - ./default.env
     depends_on:
       broker:
         condition: service_healthy

@@ -22,7 +22,8 @@ docker compose up
 Site will be available at port 8080.
 
 > [!NOTE]
-> You can modify the default (weak) DB credentials by defining `production.env` file.
+> You can modify the default (weak) DB credentials by defining `production.env` file
+> and using the `--env-file production.env` flag with `docker compose`.
 > You can find the names of the env vars that you may want to override in `default.env`.
 
 ## See also
