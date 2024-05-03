@@ -11,10 +11,19 @@ docker compose build
 
 When build finishes start all containers using the following command.
 ```bash
+docker compose --profile local up
+```
+
+When running on production, `local` profile should not be used:
+```bash
 docker compose up
 ```
 
 Site will be available at port 8080.
+
+> [!NOTE]
+> You can modify the default (weak) DB credentials by defining `production.env` file.
+> You can find the names of the env vars that you may want to override in `default.env`.
 
 ## See also
 

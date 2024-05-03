@@ -22,6 +22,12 @@ services:
     image: 10.40.71.55:5000/rsww_184529_api_gateway
     build:
       context: ./api_gateway
+    env_file:
+      - path: ./default.env
+        required: true
+      # allow setting up non-default credentials
+      - path: ./production.env
+        required: false
     depends_on:
       broker:
         condition: service_healthy
@@ -29,3 +35,23 @@ services:
       watch:
         - path: ./api_gateway
           action: rebuild
+  db-sql:
+    image: 10.40.71.55:5000/rsww_184529_db_sql
+    profiles: [local]
+    ports:
+      # db is limited to local (dev) profile so let's just expose it for convenience
+      - "15432:5432"
+    build:
+      context: ./db_sql
+      additional_contexts:
+        - db_scripts=./db_scripts/sql
+  db-mongo:
+    image: 10.40.71.55:5000/rsww_184529_db_mongo
+    profiles: [local]
+    ports:
+      # db is limited to local (dev) profile so let's just expose it for convenience
+      - "17017:27017"
+    build:
+      context: ./db_mongo
+      additional_contexts:
+        - db_scripts=./db_scripts/mongo
