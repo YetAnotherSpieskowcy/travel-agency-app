@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS flight_events
     version BIGINT NOT NULL,
     data JSONB NOT NULL,
 
-    change_time TIMESTAMP NOT NULL DEFAULT NOW(),
+    change_time TIMESTAMP NOT NULL DEFAULT now(),
 
     UNIQUE (aggregate_id, version)
 );

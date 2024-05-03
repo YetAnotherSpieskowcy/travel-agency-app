@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS tour_offer_events
 
     --- Additional metadata:
     -- Time when the change was made (event was created)
-    change_time TIMESTAMP NOT NULL DEFAULT NOW(),
+    change_time TIMESTAMP NOT NULL DEFAULT now(),
 
     --- Enforce uniqueness
     UNIQUE (aggregate_id, version)
