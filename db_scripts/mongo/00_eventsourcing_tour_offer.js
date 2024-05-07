@@ -2,6 +2,8 @@
 Snapshot collection for tour offers service.
 */
 
+db = db.getSiblingDB("rsww_184529");
+
 const SNAPSHOT_VALIDATOR = {
   $jsonSchema: {
     bsonType: "object",

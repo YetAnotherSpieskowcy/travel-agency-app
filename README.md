@@ -14,9 +14,16 @@ When build finishes start all containers using the following command.
 docker compose --profile local up
 ```
 
-When running on production, `local` profile should not be used:
+### How to run on production?
+
+When running on production, you should first fill the database with sample data:
 ```bash
-docker compose up
+export $(cat default.env | xargs)
+db_scripts/sql/fill_with_sample_data.sh
+```
+and then run the stack without the `local` profile (as databases are already provided separately):
+```bash
+docker stack deploy --compose-file compose.yaml rsww_184529
 ```
 
 Site will be available at port 8080.

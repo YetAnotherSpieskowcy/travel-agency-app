@@ -12,4 +12,6 @@ Useful sources:
 - https://danielwhittaker.me/2014/10/05/build-master-details-view-using-cqrs-event-sourcing/
 */
 
+db = db.getSiblingDB("rsww_184529");
+
 // db.createCollection("tour_offer_view_<view_name>", {...})

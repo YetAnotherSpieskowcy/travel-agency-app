@@ -6,6 +6,8 @@ Q: Why isn't this in relational DB like the rest of event sourcing?
    while relational DB focuses on event sourcing and relatedly, snapshots.
 */
 
+db = db.getSiblingDB("rsww_184529");
+
 const SNAPSHOT_VALIDATOR = {
   $jsonSchema: {
     bsonType: "object",
