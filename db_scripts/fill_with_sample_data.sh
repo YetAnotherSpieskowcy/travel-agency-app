@@ -14,52 +14,52 @@ db_scripts=$(realpath db_scripts)
 
 # MongoDB - document schemas
 docker run -it --rm \
-    --network host \
-    -v "$db_scripts/mongo:/scripts" \
-    -e "MONGO_URL=$MONGO_URL" \
-    mongo:4.4.9 \
-    bash -O nullglob -c 'for file in /scripts/*.js; do mongo "$MONGO_URL" "$file"; done'
+--network host \
+-v "$db_scripts/mongo:/scripts" \
+-e "MONGO_URL=$MONGO_URL" \
+mongo:4.4.9 \
+bash -O nullglob -c 'for file in /scripts/*.js; do mongo "$MONGO_URL" "$file"; done'
 
 # MongoDB - samples
 docker run -it --rm \
-    --network host \
-    -v "$db_scripts/mongo/50_samples:/scripts" \
-    -e "MONGO_URL=$MONGO_URL" \
-    mongo:4.4.9 \
-    bash -O nullglob -c 'for file in /scripts/*.js; do mongo "$MONGO_URL" "$file"; done'
+--network host \
+-v "$db_scripts/mongo/50_samples:/scripts" \
+-e "MONGO_URL=$MONGO_URL" \
+mongo:4.4.9 \
+bash -O nullglob -c 'for file in /scripts/*.js; do mongo "$MONGO_URL" "$file"; done'
 
 
 # PostgreSQL - create database
 docker run -it --rm \
-    --network host \
-    -v "$db_scripts/sql:/scripts" \
-    -e "PGUSER=$POSTGRES_USERNAME" \
-    -e "PGPASSWORD=$POSTGRES_PASSWORD" \
-    -e "PGHOST=$POSTGRES_HOST" \
-    -e "PGPORT=$POSTGRES_PORT" \
-    postgres:13 \
-    psql -f /scripts/00_create_db.sql
+--network host \
+-v "$db_scripts/sql:/scripts" \
+-e "PGUSER=$POSTGRES_USERNAME" \
+-e "PGPASSWORD=$POSTGRES_PASSWORD" \
+-e "PGHOST=$POSTGRES_HOST" \
+-e "PGPORT=$POSTGRES_PORT" \
+postgres:13 \
+psql -f /scripts/00_create_db.sql
 
 # PostgreSQL - table schemas
 docker run -it --rm \
-    --network host \
-    -v "$db_scripts/sql:/scripts" \
-    -e "PGUSER=$POSTGRES_USERNAME" \
-    -e "PGPASSWORD=$POSTGRES_PASSWORD" \
-    -e "PGHOST=$POSTGRES_HOST" \
-    -e "PGPORT=$POSTGRES_PORT" \
-    -e "PGDATABASE=$POSTGRES_DB" \
-    postgres:13 \
-    bash -O nullglob -c 'for file in /scripts/*.sql; do psql -f "$file"; done'
+--network host \
+-v "$db_scripts/sql:/scripts" \
+-e "PGUSER=$POSTGRES_USERNAME" \
+-e "PGPASSWORD=$POSTGRES_PASSWORD" \
+-e "PGHOST=$POSTGRES_HOST" \
+-e "PGPORT=$POSTGRES_PORT" \
+-e "PGDATABASE=$POSTGRES_DB" \
+postgres:13 \
+bash -O nullglob -c 'for file in /scripts/*.sql; do psql -f "$file"; done'
 
 # PostgreSQL - samples
 docker run -it --rm \
-    --network host \
-    -v "$db_scripts/sql/50_samples:/scripts" \
-    -e "PGUSER=$POSTGRES_USERNAME" \
-    -e "PGPASSWORD=$POSTGRES_PASSWORD" \
-    -e "PGHOST=$POSTGRES_HOST" \
-    -e "PGPORT=$POSTGRES_PORT" \
-    -e "PGDATABASE=$POSTGRES_DB" \
-    postgres:13 \
-    bash -O nullglob -c 'for file in /scripts/*.sql; do psql -f "$file"; done'
+--network host \
+-v "$db_scripts/sql/50_samples:/scripts" \
+-e "PGUSER=$POSTGRES_USERNAME" \
+-e "PGPASSWORD=$POSTGRES_PASSWORD" \
+-e "PGHOST=$POSTGRES_HOST" \
+-e "PGPORT=$POSTGRES_PORT" \
+-e "PGDATABASE=$POSTGRES_DB" \
+postgres:13 \
+bash -O nullglob -c 'for file in /scripts/*.sql; do psql -f "$file"; done'
