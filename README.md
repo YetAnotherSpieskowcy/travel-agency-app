@@ -17,7 +17,7 @@ docker compose --profile local up
 After containers are running, you'll need to fill the DB with sample data:
 ```bash
 export $(cat default.env dev.env | xargs)
-db_scripts/sql/fill_with_sample_data.sh
+db_scripts/fill_with_sample_data.sh
 ```
 
 ### How to run on production?
@@ -25,7 +25,7 @@ db_scripts/sql/fill_with_sample_data.sh
 When running on production, you should first fill the database with sample data:
 ```bash
 export $(cat default.env | xargs)
-db_scripts/sql/fill_with_sample_data.sh
+db_scripts/fill_with_sample_data.sh
 ```
 and then run the stack without the `local` profile (as databases are already provided separately):
 ```bash
