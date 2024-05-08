@@ -31,5 +31,5 @@ CREATE TABLE IF NOT EXISTS events
     -- Event data blob - JSON object for *Created events, (JSON) integer for *Changed events
     data JSONB NOT NULL,
 
-    change_time TIMESTAMP NOT NULL DEFAULT now(),
+    change_time TIMESTAMP NOT NULL DEFAULT now()
 );
