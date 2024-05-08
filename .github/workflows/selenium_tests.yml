@@ -28,6 +28,8 @@ jobs:
         run: docker compose --profile local up --build -d
       - name: Fill DB with sample data
         run: |
+          # this is a rare case where lack of quoting is actually done on purpose
+          # shellcheck disable=SC2046
           export $(cat default.env dev.env | xargs)
           db_scripts/fill_with_sample_data.sh
       - name: Run functional tests
