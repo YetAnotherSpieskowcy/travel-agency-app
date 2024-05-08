@@ -13,7 +13,7 @@ POSTGRES_DB="${POSTGRES_DB:-5432}"
 db_scripts=$(realpath db_scripts)
 
 # MongoDB - document schemas
-docker run -it --rm \
+docker run --rm \
 	--network host \
 	-v "$db_scripts/mongo:/scripts" \
 	-e "MONGO_URL=$MONGO_URL" \
@@ -21,7 +21,7 @@ docker run -it --rm \
 	bash -O nullglob -c 'for file in /scripts/*.js; do mongo "$MONGO_URL" "$file"; done'
 
 # MongoDB - samples
-docker run -it --rm \
+docker run --rm \
 	--network host \
 	-v "$db_scripts/mongo/50_samples:/scripts" \
 	-e "MONGO_URL=$MONGO_URL" \
@@ -29,7 +29,7 @@ docker run -it --rm \
 	bash -O nullglob -c 'for file in /scripts/*.js; do mongo "$MONGO_URL" "$file"; done'
 
 # PostgreSQL - create database
-docker run -it --rm \
+docker run --rm \
 	--network host \
 	-v "$db_scripts/sql:/scripts" \
 	-e "PGUSER=$POSTGRES_USERNAME" \
@@ -40,7 +40,7 @@ docker run -it --rm \
 	psql -f /scripts/00_create_db.sql
 
 # PostgreSQL - table schemas
-docker run -it --rm \
+docker run --rm \
 	--network host \
 	-v "$db_scripts/sql:/scripts" \
 	-e "PGUSER=$POSTGRES_USERNAME" \
@@ -52,7 +52,7 @@ docker run -it --rm \
 	bash -O nullglob -c 'for file in /scripts/*.sql; do psql -f "$file"; done'
 
 # PostgreSQL - samples
-docker run -it --rm \
+docker run --rm \
 	--network host \
 	-v "$db_scripts/sql/50_samples:/scripts" \
 	-e "PGUSER=$POSTGRES_USERNAME" \
