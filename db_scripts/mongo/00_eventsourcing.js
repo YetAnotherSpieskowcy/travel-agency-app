@@ -19,7 +19,7 @@ const SNAPSHOT_VALIDATOR = {
       },
       // ID of the latest event for the entity when snapshot was made
       last_event_id: {
-        bsonType: "long",
+        bsonType: "number",
       },
       // Data of the aggregate snapshot
       data: {
