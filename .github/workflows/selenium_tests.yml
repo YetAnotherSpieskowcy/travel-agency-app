@@ -25,7 +25,11 @@ jobs:
       - name: Install xvfb
         run: sudo apt-get install xvfb
       - name: Run docker
-        run: docker compose up --build -d
+        run: docker compose --profile local up --build -d
+      - name: Fill DB with sample data
+        run: |
+          export $(cat default.env dev.env | xargs)
+          db_scripts/sql/fill_with_sample_data.sh
       - name: Run functional tests
         run: python -m pytest functional_tests/
       - name: Shut down docker

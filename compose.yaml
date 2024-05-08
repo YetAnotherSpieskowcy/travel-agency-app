@@ -39,8 +39,6 @@ services:
       - "15432:5432"
     build:
       context: ./db_sql
-      additional_contexts:
-        - db_scripts=./db_scripts/sql
   db-mongo:
     image: 10.40.71.55:5000/rsww_184529_db_mongo
     profiles: [local]
@@ -49,5 +47,3 @@ services:
       - "17017:27017"
     build:
       context: ./db_mongo
-      additional_contexts:
-        - db_scripts=./db_scripts/mongo

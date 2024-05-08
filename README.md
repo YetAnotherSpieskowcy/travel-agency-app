@@ -14,6 +14,12 @@ When build finishes start all containers using the following command.
 docker compose --profile local up
 ```
 
+After containers are running, you'll need to fill the DB with sample data:
+```bash
+export $(cat default.env dev.env | xargs)
+db_scripts/sql/fill_with_sample_data.sh
+```
+
 ### How to run on production?
 
 When running on production, you should first fill the database with sample data:
