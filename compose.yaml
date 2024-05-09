@@ -21,3 +21,14 @@ services:
     image: 10.40.71.55:5000/rsww_184529_tour_operator
     build:
         context: ./tour_operator
+  price_calculator:
+    image: 10.40.71.55.5000/rsww_184529_price_calculator
+    build:
+      context: ./price_calculator
+    depends_on:
+      broker:
+        condition: service_healthy
+    develop: # To be removed before deployment
+      watch:
+        - path: ./price_calculator
+          action: rebuild
