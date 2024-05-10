@@ -1,0 +1,24 @@
+services:
+  proxy:
+    develop:
+      watch:
+        - path: ./static/html
+          action: sync
+          target: /data/www
+  api-gateway:
+    develop: # To be removed before deployment
+      watch:
+        - path: ./api_gateway
+          action: rebuild
+  db-sql:
+    image: 10.40.71.55:5000/rsww_184529_db_sql
+    ports:
+      - "15432:5432"
+    build:
+      context: ./db_sql
+  db-mongo:
+    image: 10.40.71.55:5000/rsww_184529_db_mongo
+    ports:
+      - "17017:27017"
+    build:
+      context: ./db_mongo

@@ -7,13 +7,6 @@ services:
       context: ./proxy
       additional_contexts:
         - static=./static
-    depends_on:
-      - api-gateway
-    develop: # To be removed before deployment
-      watch:
-        - path: ./static/html
-          action: sync
-          target: /data/www
   broker:
     image: 10.40.71.55:5000/rsww_184529_broker
     build:
@@ -24,26 +17,3 @@ services:
       context: ./api_gateway
     env_file:
       - ./default.env
-    depends_on:
-      broker:
-        condition: service_healthy
-    develop: # To be removed before deployment
-      watch:
-        - path: ./api_gateway
-          action: rebuild
-  db-sql:
-    image: 10.40.71.55:5000/rsww_184529_db_sql
-    profiles: [local]
-    ports:
-      # db is limited to local (dev) profile so let's just expose it for convenience
-      - "15432:5432"
-    build:
-      context: ./db_sql
-  db-mongo:
-    image: 10.40.71.55:5000/rsww_184529_db_mongo
-    profiles: [local]
-    ports:
-      # db is limited to local (dev) profile so let's just expose it for convenience
-      - "17017:27017"
-    build:
-      context: ./db_mongo
