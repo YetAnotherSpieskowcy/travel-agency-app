@@ -3,6 +3,9 @@
 set -xeo pipefail
 
 MONGO_PORT="${MONGO_PORT:-27017}"
+# SC tries to guess possible misspelling for uppercase variables.
+# Well... Its guess was wrong.
+# shellcheck disable=SC2153
 MONGO_URL="mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@$MONGO_HOST:$MONGO_PORT/"
 
 export PGHOST="${POSTGRES_HOST:-student-swarm01.maas}"
@@ -14,12 +17,12 @@ export PGPASSWORD="$POSTGRES_PASSWORD"
 # Wait for DB servers to be healthy
 db_ready=0
 for _ in {0..5}; do
-    sleep 1
+	sleep 1
 	if ! mongo --quiet "$MONGO_URL" --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'; then
 		continue
 	fi
 	if ! pg_isready; then
-	    continue
+		continue
 	fi
 	db_ready=1
 	break
