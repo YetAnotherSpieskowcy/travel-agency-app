@@ -1,4 +1,4 @@
-DB_SCRIPTS_IMAGE_NAME = 10.40.71.55:5000/rsww_184529_db_scripts
+DB_SCRIPTS_IMAGE_NAME = ghcr.io/yetanotherspieskowcy/rsww_184529_db_scripts
 
 # [ran on a dev machine]
 # Builds and runs the whole dev stack, making sure to fill the DB

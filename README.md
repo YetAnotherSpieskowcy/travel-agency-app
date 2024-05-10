@@ -11,7 +11,8 @@ make dev-run
 
 ### How to deploy to production?
 
-When running on production, you should first upload the images to registry (done on dev machine):
+In order to do that, you'll first need to make sure that [you have configured authentication for GitHub Packages registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry).
+Once you do, you can build and push the images to the registry with following targets (done on dev machine):
 ```console
 make build
 make push
