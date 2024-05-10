@@ -4,32 +4,21 @@ Implementation of a system for servicing customers interested in purchasing tour
 
 ## Running services
 
-Build all the nessesary services.
-```bash
-docker compose build
-```
-
-When build finishes start all containers using the following command.
-```bash
-docker compose --profile local up
-```
-
-After containers are running, you'll need to fill the DB with sample data:
-```bash
-export $(cat default.env dev.env | xargs)
-db_scripts/fill_with_sample_data.sh
+To run all services, simply use the `dev-up` make target:
+```console
+make dev-up
 ```
 
 ### How to run on production?
 
-When running on production, you should first fill the database with sample data:
-```bash
-export $(cat default.env | xargs)
-db_scripts/fill_with_sample_data.sh
+When running on production, you should first upload the images to registry (done on dev machine):
+```console
+make build
+make push
 ```
-and then run the stack without the `local` profile (as databases are already provided separately):
-```bash
-docker stack deploy --compose-file compose.yaml rsww_184529
+and then run the stack by using the `prod-up` make target (done on cluster master node):
+```console
+make dev-up
 ```
 
 Site will be available at port 8080.

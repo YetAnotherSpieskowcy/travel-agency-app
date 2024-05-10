@@ -25,13 +25,9 @@ jobs:
       - name: Install xvfb
         run: sudo apt-get install xvfb
       - name: Run docker
-        run: docker compose --profile local up --build -d
+        run: make dev-up-only-daemon
       - name: Fill DB with sample data
-        run: |
-          # this is a rare case where lack of quoting is actually done on purpose
-          # shellcheck disable=SC2046
-          export $(cat default.env dev.env | xargs)
-          db_scripts/fill_with_sample_data.sh
+        run: make dev-fill-db
       - name: Run functional tests
         run: python -m pytest functional_tests/
       - name: Shut down docker
