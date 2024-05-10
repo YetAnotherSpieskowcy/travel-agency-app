@@ -17,3 +17,7 @@ services:
       context: ./api_gateway
     env_file:
       - ./default.env
+  tour_operator:
+    image: 10.40.71.55.5000/rsww_184529_tour_operator
+    build:
+        context: ./tour_operator
