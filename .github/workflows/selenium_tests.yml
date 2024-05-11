@@ -25,7 +25,7 @@ jobs:
       - name: Install xvfb
         run: sudo apt-get install xvfb
       - name: Run docker
-        run: make dev-up-only-daemon
+        run: make dev-up-daemon
       - name: Fill DB with sample data
         run: make dev-fill-db
       - name: Run functional tests
