@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.price_calculator
+package pl.edu.pg.rsww.pricecalculator
 
 import kotlin.test.*
 
@@ -30,8 +30,7 @@ internal class PriceCalculatorTest {
 
         val expected: Int = 2 * (1513 + 7 * 30 + 250)
 
-        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "samolot"))
-
+        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "plane"))
     }
 
     @Test
@@ -41,8 +40,7 @@ internal class PriceCalculatorTest {
 
         val expected: Int = 2 * (1513 + 7 * 30 + 150)
 
-        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "pociag"))
-
+        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "train"))
     }
 
     @Test
@@ -53,7 +51,6 @@ internal class PriceCalculatorTest {
         val expected: Int = 2 * (1513 + 7 * 30 + 100)
 
         assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "bus"))
-
     }
 
     @Test
@@ -64,7 +61,6 @@ internal class PriceCalculatorTest {
         val expected: Int = 2 * (1513 + 7 * 30 + 0)
 
         assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, ""))
-
     }
 
     @Test
@@ -74,7 +70,6 @@ internal class PriceCalculatorTest {
 
         val expected: Int = 4 * (1513 + 7 * 30 + 250)
 
-        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 4, "samolot"))
-
+        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 4, "plane"))
     }
 }

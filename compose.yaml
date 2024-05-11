@@ -28,7 +28,3 @@ services:
     depends_on:
       broker:
         condition: service_healthy
-    develop: # To be removed before deployment
-      watch:
-        - path: ./price_calculator
-          action: rebuild

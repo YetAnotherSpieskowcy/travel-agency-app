@@ -1,13 +1,11 @@
-package pl.edu.pg.rsww.price_calculator
+package pl.edu.pg.rsww.pricecalculator
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class PriceCalculatorApplicationTests {
-
-	@Test
-	fun contextLoads() {
-	}
-
+    @Test
+    fun contextLoads() {
+    }
 }
