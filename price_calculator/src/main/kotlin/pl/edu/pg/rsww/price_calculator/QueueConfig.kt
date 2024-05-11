@@ -1,11 +1,11 @@
-package pl.edu.pg.rsww.price_calculator
+package pl.edu.pg.rsww.pricecalculator
 
-import org.springframework.context.annotation.Configuration
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ConfigurationProperties(prefix = "app.queue")
 public class QueueConfig {
     lateinit var base: String
-    val requests get() = "${base}.requests"
+    val requests get() = "$base.requests"
 }

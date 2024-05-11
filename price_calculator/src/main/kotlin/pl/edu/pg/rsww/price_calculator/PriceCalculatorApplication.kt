@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.price_calculator
+package pl.edu.pg.rsww.pricecalculator
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class PriceCalculatorApplication
 
 fun main(args: Array<String>) {
-	runApplication<PriceCalculatorApplication>(*args)
+    runApplication<PriceCalculatorApplication>(*args)
 }

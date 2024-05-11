@@ -1,10 +1,10 @@
-package pl.edu.pg.rsww.price_calculator
+package pl.edu.pg.rsww.pricecalculator
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 public data class ResponseMessage(
-        val status: Int,
-        val headers: Map<String, String>,
-        val body: String,
+    val status: Int,
+    val headers: Map<String, String>,
+    val body: String,
 )
