@@ -6,7 +6,7 @@ services:
           action: sync
           target: /data/www
   api-gateway:
-    develop: # To be removed before deployment
+    develop:
       watch:
         - path: ./api_gateway
           action: rebuild

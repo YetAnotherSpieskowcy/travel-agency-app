@@ -4,21 +4,21 @@ Implementation of a system for servicing customers interested in purchasing tour
 
 ## Running services
 
-To run all services, simply use the `dev-up` make target:
+To run all services, simply use the `dev-run` make target:
 ```console
-make dev-up
+make dev-run
 ```
 
-### How to run on production?
+### How to deploy to production?
 
 When running on production, you should first upload the images to registry (done on dev machine):
 ```console
 make build
 make push
 ```
-and then run the stack by using the `prod-up` make target (done on cluster master node):
+and then deploy the stack by using the `prod-run` make target (done on cluster master node):
 ```console
-make dev-up
+make prod-run
 ```
 
 Site will be available at port 8080.
