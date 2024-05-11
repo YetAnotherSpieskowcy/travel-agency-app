@@ -1,6 +1,7 @@
 package pl.edu.pg.rsww.pricecalculator
 
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class PriceCalculatorTest {
     val calculator: PriceCalculator = PriceCalculator()
