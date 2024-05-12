@@ -20,7 +20,7 @@ public class PriceCalculator {
         val a = sin(toRadians(location1.latitude)) * sin(toRadians(location2.latitude))
         val b = cos(toRadians(location1.latitude)) * cos(toRadians(location2.latitude))
         val c = cos(toRadians(location2.longitude - location1.longitude))
-        val result = acos(a + b * c) * 6371
+        val result = acos(a + b * c) * earthRadius
         val ret = round(result).toInt()
         return ret
     }
