@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk-alpine as build
 WORKDIR /workspace/app
 
 COPY . /workspace/app
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build --scan
+RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build
 WORKDIR /workspace/app/build/dependency
 RUN jar -xf ../libs/*-SNAPSHOT.jar
 
