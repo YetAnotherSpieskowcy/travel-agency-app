@@ -1,10 +1,9 @@
 # flake8: noqa E731 not aplicable when working with selenium
 import pytest
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import TimeoutException
-
 
 
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
@@ -19,7 +18,9 @@ def test_search_string(driver):
     search_bar().send_keys("test search string")
 
     wait.until(
-        EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[1]/div[1]/p[1]"))
+        EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div/div/div[1]/div[1]/p[1]")
+        )
     )
     assert (  # Test if list contains at least one correct result
         results().find_element(By.XPATH, "/html/body/div/div/div[1]/div[1]/p[1]").text
@@ -28,6 +29,7 @@ def test_search_string(driver):
     assert (  # Test if list contains at least one correct result
         results().find_element(By.XPATH, "//div/div/p[2]").text == "Hello, world!"
     )
+
 
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_details_view(driver):
@@ -57,9 +59,7 @@ def test_details_view(driver):
         driver.find_element(By.XPATH, "/html/body/div/div/div[1]/p[2]").text
         == "A slightly longer description for trip number 0"
     )
-    cancel = lambda: driver.find_element(
-        By.XPATH, "/html/body/div/div/div[1]/button"
-    )
+    cancel = lambda: driver.find_element(By.XPATH, "/html/body/div/div/div[1]/button")
     assert cancel().text == "CANCEL"
     cancel().click()
     results = lambda: driver.find_element(By.ID, "results")
