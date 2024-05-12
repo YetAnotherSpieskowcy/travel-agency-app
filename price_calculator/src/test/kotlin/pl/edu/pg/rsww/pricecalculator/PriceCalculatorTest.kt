@@ -31,7 +31,7 @@ internal class PriceCalculatorTest {
 
         val expected: Float = 2 * (1513 + 7 * 5.0f * 10 + 250 + 80)
 
-        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "samolot", 5.0f, "All inclusive"))
+        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 2, "flight", 5.0f, "All inclusive"))
     }
 
     @Test
@@ -61,6 +61,6 @@ internal class PriceCalculatorTest {
 
         val expected: Float = 4 * (1513 + 7 * 5.0f * 10 + 250 + 80)
 
-        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 4, "samolot", 5.0f, "All inclusive"))
+        assertEquals(expected, calculator.calculatePrice(destLocation, fromLocation, 7, 4, "flight", 5.0f, "All inclusive"))
     }
 }

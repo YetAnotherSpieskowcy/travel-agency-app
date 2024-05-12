@@ -49,7 +49,7 @@ public class PriceCalculator {
     ): Float {
         val distance = calculateDistance(fromGeolocation, destGeolocation)
         var transportPrice = 0
-        if (transportType == "samolot") {
+        if (transportType == "flight") {
             transportPrice = 250
         } else if (transportType == "bus") {
             transportPrice = 100
