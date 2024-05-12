@@ -8,6 +8,19 @@ import kotlin.math.sin
 
 public class PriceCalculator {
     val earthRadius = 6371 // in km
+    val mealPrices =
+        mapOf(
+            "All inclusive" to 80,
+            "2 posi\u0142ki" to 25,
+            "Full board plus" to 40,
+            "\u015aniadania" to 15,
+            "Bez wy\u017cywienia" to 0,
+            "Half board plus" to 30,
+            "Wy\u017cywienie zgodnie z programem" to 30,
+            "3 posi\u0142ki" to 35,
+            "All inclusive soft" to 90,
+            "All inclusive light" to 90,
+        )
 
     fun toRadians(deg: Float): Double = deg / 180.0 * PI
 
@@ -31,17 +44,19 @@ public class PriceCalculator {
         duration: Int,
         numPeople: Int,
         transportType: String,
-    ): Int {
+        hotelRating: Float,
+        mealType: String,
+    ): Float {
         val distance = calculateDistance(fromGeolocation, destGeolocation)
         var transportPrice = 0
-        if (transportType == "plane") {
+        if (transportType == "samolot") {
             transportPrice = 250
-        } else if (transportType == "train") {
-            transportPrice = 150
         } else if (transportType == "bus") {
             transportPrice = 100
         }
-        val price = numPeople * (distance + duration * 30 + transportPrice)
+        val mealPrice: Int = mealPrices[mealType] ?: 0
+
+        val price = numPeople * (distance + duration * hotelRating * 10 + transportPrice + mealPrice)
 
         return price
     }
