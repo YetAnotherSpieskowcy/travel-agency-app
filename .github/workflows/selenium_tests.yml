@@ -16,6 +16,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GH_CLONE_TOKEN }}
+          submodules: true
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip  
@@ -23,7 +25,9 @@ jobs:
       - name: Install xvfb
         run: sudo apt-get install xvfb
       - name: Run docker
-        run: docker compose up --build -d
+        run: make dev-up-daemon
+      - name: Fill DB with sample data
+        run: make dev-fill-db
       - name: Run functional tests
         run: python -m pytest functional_tests/
       - name: Shut down docker

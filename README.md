@@ -4,17 +4,29 @@ Implementation of a system for servicing customers interested in purchasing tour
 
 ## Running services
 
-Build all the nessesary services.
-```bash
-docker compose build
+To run all services, simply use the `dev-run` make target:
+```console
+make dev-run
 ```
 
-When build finishes start all containers using the following command.
-```bash
-docker compose up
+### How to deploy to production?
+
+When running on production, you should first upload the images to registry (done on dev machine):
+```console
+make build
+make push
+```
+and then deploy the stack by using the `prod-run` make target (done on cluster master node):
+```console
+make prod-run
 ```
 
 Site will be available at port 8080.
+
+> [!NOTE]
+> You can modify the default (weak) DB credentials by defining `production.env` file
+> and using the `--env-file production.env` flag with `docker compose`.
+> You can find the names of the env vars that you may want to override in `default.env`.
 
 ## See also
 

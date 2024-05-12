@@ -53,3 +53,11 @@ __pycache__/
 
 # Installer logs
 pip-log.txt
+
+# Env file
+.env
+
+# NodeJS modules (such as Prettier)
+node_modules/
+package.json
+package-lock.json

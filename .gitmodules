@@ -1,0 +1,6 @@
+[submodule "db_scripts/mongo/50_samples"]
+	path = db_scripts/mongo/50_samples
+	url = https://github.com/YetAnotherSpieskowcy/travel-agency-samples-mongo
+[submodule "db_scripts/sql/50_samples"]
+	path = db_scripts/sql/50_samples
+	url = https://github.com/YetAnotherSpieskowcy/travel-agency-samples-sql

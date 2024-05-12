@@ -7,13 +7,6 @@ services:
       context: ./proxy
       additional_contexts:
         - static=./static
-    depends_on:
-      - api-gateway
-    develop: # To be removed before deployment
-      watch:
-        - path: ./static/html
-          action: sync
-          target: /data/www
   broker:
     image: 10.40.71.55:5000/rsww_184529_broker
     build:
@@ -22,10 +15,5 @@ services:
     image: 10.40.71.55:5000/rsww_184529_api_gateway
     build:
       context: ./api_gateway
-    depends_on:
-      broker:
-        condition: service_healthy
-    develop: # To be removed before deployment
-      watch:
-        - path: ./api_gateway
-          action: rebuild
+    env_file:
+      - ./default.env
