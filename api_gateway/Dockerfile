@@ -3,7 +3,7 @@ FROM eclipse-temurin:21-jdk-alpine as build
 WORKDIR /workspace/app
 
 COPY . /workspace/app
-RUN ./gradlew clean build
+RUN --mount=type=cache,target=/root/.gradle,sharing=locked ./gradlew clean build
 WORKDIR /workspace/app/build/dependency
 RUN jar -xf ../libs/*-SNAPSHOT.jar
 
