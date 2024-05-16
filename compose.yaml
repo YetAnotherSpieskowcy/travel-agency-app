@@ -28,3 +28,9 @@ services:
     depends_on:
       broker:
         condition: service_healthy
+  auth:
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_auth
+    build:
+      context: ./auth
+    env_file:
+      - ./default.env

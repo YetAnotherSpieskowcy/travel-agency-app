@@ -34,6 +34,11 @@ def test_search_string(driver):
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_details_view(driver):
     wait = WebDriverWait(driver, 5)
+    wait.until(
+        EC.presence_of_element_located(
+            (By.NAME, "search")
+        )
+    )
     search_bar = lambda: driver.find_element(By.NAME, "search")
     search_bar().send_keys("test search string")
 

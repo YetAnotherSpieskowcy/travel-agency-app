@@ -22,3 +22,6 @@ services:
       - "17017:27017"
     build:
       context: ./db_mongo
+  auth:
+    env_file:
+      - ./dev.env
