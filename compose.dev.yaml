@@ -11,13 +11,13 @@ services:
         - path: ./api_gateway
           action: rebuild
   db-sql:
-    image: 10.40.71.55:5000/rsww_184529_db_sql
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_db_sql
     ports:
       - "15432:5432"
     build:
       context: ./db_sql
   db-mongo:
-    image: 10.40.71.55:5000/rsww_184529_db_mongo
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_db_mongo
     ports:
       - "17017:27017"
     build:
