@@ -33,13 +33,13 @@ if [[ "$db_ready" -eq 0 ]]; then
 fi
 
 # MongoDB
-find /scripts/mongo -name '*.js' -print0 | xargs -0 -n 1 mongo "$MONGO_URL"
+find /scripts/mongo -name '*.js' -print0 | sort -z | xargs -t -0 -n 1 mongo "$MONGO_URL"
 echo 'MongoDB: Sample data filling finished.'
 
 # PostgreSQL - create database using maintenance db
 PGDATABASE='' psql -v 'ON_ERROR_STOP=1' -f /scripts/sql/00_create_db.sql
 # PostgreSQL - run all SQL scripts
-find /scripts/sql -name '*.sql' -print0 | xargs -0 -n 1 psql -v 'ON_ERROR_STOP=1' -f >/dev/null
+find /scripts/sql -name '*.sql' -print0 | sort -z | xargs -t -0 -n 1 psql -v 'ON_ERROR_STOP=1' -f >/dev/null
 echo 'PostgreSQL: Sample data filling finished.'
 
 echo '*: Sample data filling finished.'
