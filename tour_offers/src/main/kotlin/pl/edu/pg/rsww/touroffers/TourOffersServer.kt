@@ -17,9 +17,9 @@ public class TourOffersServer {
         if (request.path.contains("get_trips")){
             val n: Int = request.params["n"]?.toInt() ?: 0
             val next = n + 1
-            val search = request.params["search"] ?: ""
+            val destination = request.params["destination"] ?: ""
 
-            val result = tourOffersManager.getTourList(search, "", "", 0, 0, 0, 0, 0)
+            val result = tourOffersManager.getTourList(destination, "", "", 0, 0, 0, 0, n)
 
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)

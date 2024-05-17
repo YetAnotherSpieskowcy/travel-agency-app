@@ -1,6 +1,14 @@
+<label for="destination">Destination:</label><input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+    name="destination" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
+    hx-target="#results" class="form-control" type="search" />
 <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
-    name="search" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
-    hx-target="#results" class="form-control" type="search" mustache-template="trip" />
+       name="from" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
+       hx-target="#results" class="form-control" type="search"  />
+<!--mustache-template="trip"
+<input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+       name="num_adults" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
+       hx-target="#results" class="form-control" type="number" mustache-template="trip" />-->
+
 <div id="results">
     <p class="my-10 items-center text-center justify-between mx-auto">Start typing to see the results...</p>
 </div>
