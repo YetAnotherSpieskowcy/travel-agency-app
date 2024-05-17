@@ -1,6 +1,6 @@
 services:
   proxy:
-    image: 10.40.71.55:5000/rsww_184529_proxy
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_proxy
     ports:
       - "8080:80"
     build: 
@@ -8,20 +8,20 @@ services:
       additional_contexts:
         - static=./static
   broker:
-    image: 10.40.71.55:5000/rsww_184529_broker
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_broker
     build:
       context: ./broker
   api-gateway:
-    image: 10.40.71.55:5000/rsww_184529_api_gateway
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_api_gateway
     build:
       context: ./api_gateway
     env_file:
       - ./default.env
   tour-operator:
-    image: 10.40.71.55:5000/rsww_184529_tour_operator
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_tour_operator
     build:
         context: ./tour_operator
   price-calculator:
-    image: 10.40.71.55:5000/rsww_184529_price_calculator
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_price_calculator
     build:
       context: ./price_calculator
