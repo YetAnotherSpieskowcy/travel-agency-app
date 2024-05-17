@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.tour_offers
+package pl.edu.pg.rsww.touroffers
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
@@ -9,19 +9,19 @@ import org.springframework.beans.factory.annotation.Value
 
 
 public class TourOffersServer {
+    val tourOffersManager: TourOffersManager = TourOffersManager()
+
     @RabbitListener(queuesToDeclare = [Queue("#{queueConfig.requests}")])
     fun requestHandler(request: String): String {
         val request = Json.decodeFromString<RequestMessage>(request)
         if (request.path.contains("get_trips")){
             val n: Int = request.params["n"]?.toInt() ?: 0
             val next = n + 1
+            val search = request.params["search"] ?: ""
 
-            val resp = ResponseMessage(200, emptyMap(), """{
-	            "name": "${request.params["search"]}",
-	            "n": $next,
-	            "id": $n,
-	            "description": "test"
-                }""")
+            val result = tourOffersManager.getTourList(search, "", "", 0, 0, 0, 0, 0)
+
+            val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
             return rawResp
         }

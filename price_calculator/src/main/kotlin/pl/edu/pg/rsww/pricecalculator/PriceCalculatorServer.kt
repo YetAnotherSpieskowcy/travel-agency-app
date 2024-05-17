@@ -20,6 +20,8 @@ public class PriceCalculatorServer {
 
             val duration: Int = request.params["duration"]?.toInt() ?: 0
             val numPeople: Int = request.params["numPeople"]?.toInt() ?: 0
+            var freeSpots: Int = request.params["freeSpots"]?.toInt() ?: 1
+            if (freeSpots == 0) { freeSpots = 1 }
             val transportType: String = request.params["transportType"] ?: "none"
             val hotelRating: Int = request.params["hotelRating"]?.toInt() ?: 30
             val mealType: String = request.params["mealType"] ?: "Bez wy\u017cywienia"
@@ -33,6 +35,7 @@ public class PriceCalculatorServer {
                     fromGeolocation,
                     duration,
                     numPeople,
+                    freeSpots,
                     transportType,
                     hotelRating / 10.0f,
                     mealType,

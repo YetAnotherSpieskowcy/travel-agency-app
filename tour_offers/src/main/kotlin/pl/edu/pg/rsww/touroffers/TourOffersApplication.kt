@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.tour_offers
+package pl.edu.pg.rsww.touroffers
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

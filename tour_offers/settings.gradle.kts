@@ -1,1 +1,1 @@
-rootProject.name = "tour_offers_service"
+rootProject.name = "tour_offers"
