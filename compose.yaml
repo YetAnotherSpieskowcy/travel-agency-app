@@ -25,9 +25,6 @@ services:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_price_calculator
     build:
       context: ./price_calculator
-    depends_on:
-      broker:
-        condition: service_healthy
   auth:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_auth
     build:
