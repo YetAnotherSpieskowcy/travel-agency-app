@@ -48,7 +48,7 @@ class AppConfig {
         exchange: DirectExchange,
         transactionsQueue: Queue,
     ): Binding {
-        return BindingBuilder.bind(transactionsQueue).to(exchange).with(
+        return BindingBuilder.bind(transactionsQueue).to(DirectExchange("tour_operator")).with(
             "${queueConfig.transactions}.*"
         )
     }
