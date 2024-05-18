@@ -21,6 +21,10 @@ services:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_tour_operator
     build:
         context: ./tour_operator
+  trip-reservations:
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_trip_reservations
+    build:
+        context: ./trip_reservations
   price-calculator:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_price_calculator
     build:
