@@ -5,6 +5,7 @@ import pytest
 from pyvirtualdisplay import Display
 from selenium import webdriver
 
+
 @pytest.fixture()
 def base_url():
     port = os.environ.get("PYTEST_PORT")
@@ -28,15 +29,16 @@ def base_driver():
 
     driver.close()
 
+
 @pytest.fixture
 def sessionless_driver(base_driver, base_url):
     base_driver.get(base_url + "/login.html")
-    return driver
+    return base_driver
 
 
 @pytest.fixture
 def driver(base_driver, base_url):
     base_driver.get(base_url + "/login.html")
-    base_driver.add_cookie({"name":"user", "value":"testuser"})
+    base_driver.add_cookie({"name": "user", "value": "testuser"})
     base_driver.get(base_url)
     return base_driver
