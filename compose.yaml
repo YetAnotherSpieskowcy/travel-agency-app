@@ -25,3 +25,9 @@ services:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_price_calculator
     build:
       context: ./price_calculator
+  auth:
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_auth
+    build:
+      context: ./auth
+    env_file:
+      - ./default.env

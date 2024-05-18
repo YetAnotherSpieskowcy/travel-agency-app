@@ -29,7 +29,13 @@ public class RoutingController(
     fun mock(
         @PathVariable path: String,
         @RequestParam params: Map<String, String>,
+        @RequestHeader headers: Map<String, String>,
     ): ResponseEntity<String> {
+        if (!(headers["cookie"]?.contains("user") ?: false)) {
+            var builder = ResponseEntity.status(300)
+            builder.header("HX-Redirect", "/login.html")
+            return builder.body("")
+        }
         val builder = ResponseEntity.status(200)
         if (path.contains("get_trips")) {
             val n: Int = params["n"]?.toInt() ?: 0
@@ -63,6 +69,13 @@ public class RoutingController(
         @RequestHeader headers: Map<String, String>,
         @RequestBody(required = false) body: String?,
     ): ResponseEntity<String> {
+        if (serviceName != "auth") {
+            if (!(headers["cookie"]?.contains("user") ?: false)) {
+                var builder = ResponseEntity.status(300)
+                builder.header("HX-Redirect", "/login.html")
+                return builder.body("")
+            }
+        }
         if (!serviceQueues.contains(serviceName)) {
             throw NotFoundException()
         }
