@@ -25,7 +25,6 @@ public class RoutingController(
         return "Hello, I'm alive!"
     }
 
-<<<<<<< HEAD
     @RequestMapping("/api/mocked/{*path}")
     fun mock(
         @PathVariable path: String,
@@ -62,8 +61,6 @@ public class RoutingController(
         return builder.body("""{ "error": "404" }""")
     }
 
-=======
->>>>>>> 5a75b77 (created simple mock service)
     @RequestMapping("/api/{serviceName}/{*path}")
     fun serviceRouter(
         @PathVariable serviceName: String,

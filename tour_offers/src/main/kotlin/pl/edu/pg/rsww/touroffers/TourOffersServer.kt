@@ -18,8 +18,9 @@ public class TourOffersServer {
             val n: Int = request.params["n"]?.toInt() ?: 0
             val next = n + 1
             val destination = request.params["destination"] ?: ""
+            val from = request.params["from"] ?: ""
 
-            val result = tourOffersManager.getTourList(destination, "", "", 0, 0, 0, 0, n)
+            val result = tourOffersManager.getTourList(destination, from, "", 0, 0, 0, 0)
 
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
