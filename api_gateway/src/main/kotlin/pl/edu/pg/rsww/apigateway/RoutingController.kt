@@ -73,6 +73,7 @@ public class RoutingController(
             if (!(headers["cookie"]?.contains("user") ?: false)) {
                 var builder = ResponseEntity.status(300)
                 builder.header("HX-Redirect", "/login.html")
+                builder.header("Cache-Control", "no-cache")
                 return builder.body("")
             }
         }
