@@ -13,10 +13,28 @@ dev-run: build-dev
 	fg
 
 # [ran on a dev machine]
+# Builds, runs the whole dev stack, and watches it for changes, making sure to fill the DB
+.PHONY: dev-run
+watch-dev-run: build-dev
+	# doing a weird set -m / fg dance to allow to
+	# still stop the whole stack easily during dev by Ctrl+C
+	set -m ; \
+	$(MAKE) watch-dev-up-no-build & \
+	$(MAKE) dev-fill-db \
+		|| { exit_code=$$?; kill \%1; fg; exit "$$exit_code"; } ; \
+	fg
+
+# [ran on a dev machine]
 # Runs the whole dev stack (w/o building images or filling the DB)
 .PHONY: dev-up-no-build
 dev-up-no-build:
 	docker compose -f compose.yaml -f compose.dev.yaml up
+
+# [ran on a dev machine]
+# Runs the whole dev stack and watches it for changes (w/o building images or filling the DB)
+.PHONY: dev-up-no-build
+watch-dev-up-no-build:
+	docker compose -f compose.yaml -f compose.dev.yaml up --watch
 
 # [ran on a dev machine]
 # Builds the whole stack and then runs it in the background (daemonized)
