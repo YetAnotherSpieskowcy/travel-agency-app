@@ -25,6 +25,8 @@ services:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_trip_reservations
     build:
         context: ./trip_reservations
+    env_file:
+      - ./default.env
   price-calculator:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_price_calculator
     build:

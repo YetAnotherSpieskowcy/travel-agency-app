@@ -4,9 +4,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.amqp.core.Message
-import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,11 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired
 public class TourOperatorServer {
     @Autowired
     lateinit var template: RabbitTemplate
+
     @Autowired
     lateinit var queueConfig: QueueConfig
 
     @RabbitListener(queuesToDeclare = [Queue("#{queueConfig.transactions}")])
-    fun processPaymentEventHandler(request: String, message: Message) {
+    fun processPaymentEventHandler(
+        request: String,
+        message: Message,
+    ) {
         println(message.messageProperties.receivedRoutingKey)
         when (message.messageProperties.receivedRoutingKey) {
             queueConfig.transactionProcessPayment -> {
@@ -27,7 +29,7 @@ public class TourOperatorServer {
                     queueConfig.events,
                     queueConfig.eventPaymentProcessed,
                     Json.encodeToString(
-                        PaymentProcessedEvent(payload.triggeredBy, (0..1).random() == 1)
+                        PaymentProcessedEvent(payload.triggeredBy, (0..1).random() == 1),
                     ),
                 )
             }

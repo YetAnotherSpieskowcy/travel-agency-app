@@ -4,8 +4,8 @@ import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.DirectExchange
 import org.springframework.amqp.core.FanoutExchange
-import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.core.Queue
+import org.springframework.amqp.core.TopicExchange
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -49,7 +49,7 @@ class AppConfig {
         transactionsQueue: Queue,
     ): Binding {
         return BindingBuilder.bind(transactionsQueue).to(DirectExchange("tour_operator")).with(
-            "${queueConfig.transactions}.*"
+            "${queueConfig.transactions}.*",
         )
     }
 

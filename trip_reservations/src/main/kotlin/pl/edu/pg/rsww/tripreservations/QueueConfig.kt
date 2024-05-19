@@ -22,12 +22,12 @@ public class QueueConfig {
     val eventBookingPreferencesUpdated get() = "$events.bookingPreferencesUpdated"
 
     val externalTransactionBookTransportExchange get() = "transport_reservations.requests"
-    val externalTransactionBookTransportKey get() = "${externalTransactionBookTransportExchange}.bookTransport"
+    val externalTransactionBookTransportKey get() = "$externalTransactionBookTransportExchange.bookTransport"
     val externalEventTransportBookedExchange get() = "transport_reservations.events"
-    val externalEventTransportBookedKey get() = "${externalEventTransportBookedExchange}.transportBooked"
+    val externalEventTransportBookedKey get() = "$externalEventTransportBookedExchange.transportBooked"
 
     val externalTransactionProcessPaymentExchange get() = "tour_operator"
-    val externalTransactionProcessPaymentKey get() = "${externalTransactionProcessPaymentExchange}.transactions.processPayment"
+    val externalTransactionProcessPaymentKey get() = "$externalTransactionProcessPaymentExchange.transactions.processPayment"
     val externalEventPaymentProcessedExchange get() = "tour_operator.events"
-    val externalEventPaymentProcessedKey get() = "${externalEventPaymentProcessedExchange}.paymentProcessed"
+    val externalEventPaymentProcessedKey get() = "$externalEventPaymentProcessedExchange.paymentProcessed"
 }

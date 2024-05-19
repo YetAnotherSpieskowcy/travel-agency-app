@@ -1,18 +1,12 @@
 package pl.edu.pg.rsww.tripreservations
 
-import java.util.Timer
-import java.util.UUID
-import kotlin.concurrent.timerTask
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.amqp.core.Message
-import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
-import org.springframework.beans.factory.annotation.Autowired
-
-
+import java.util.Timer
+import java.util.UUID
+import kotlin.concurrent.timerTask
 
 public class TripReservationOrchestrator(
     val message: Message,
@@ -24,12 +18,11 @@ public class TripReservationOrchestrator(
     val sagaId = UUID.randomUUID().toString()
     var state = State.WAITING_TO_START
     var canceled = false
-    var onDone: (()->Unit)? = null
+    var onDone: (() -> Unit)? = null
 
     enum class State {
         WAITING_TO_START,
         STARTED,
-
         SENT_BOOK_TRIP,
         ACK_BOOK_TRIP,
         SENT_BOOK_TRANSPORT,
@@ -40,16 +33,16 @@ public class TripReservationOrchestrator(
         ACK_PROCESS_PAYMENT,
         SENT_CONFIRM_PURCHASE,
         ACK_CONFIRM_PURCHASE,
-
         DONE,
     }
+
     val PIVOT_STATE = State.ACK_PROCESS_PAYMENT
 
     private fun checkState(newState: State): Boolean {
         val expectedState = State.values()[newState.ordinal - 1]
         if (state != expectedState) {
             try {
-                throw RuntimeException("${newState}: expected state ${expectedState}, got ${state}")
+                throw RuntimeException("$newState: expected state $expectedState, got $state")
             } catch (e: RuntimeException) {
                 e.printStackTrace()
             }
@@ -67,12 +60,16 @@ public class TripReservationOrchestrator(
             return
         }
         state = newState
-        Timer().schedule(timerTask {
-            println("WTF")
-            if (!canceled && state < PIVOT_STATE) {
-                revertSaga()
-            }
-        }, 60000)
+        Timer()
+            .schedule(
+                timerTask {
+                    println("WTF")
+                    if (!canceled && state < PIVOT_STATE) {
+                        revertSaga()
+                    }
+                },
+                60000,
+            )
         sendBookTrip()
     }
 
@@ -97,6 +94,9 @@ public class TripReservationOrchestrator(
         if (checkState(newState)) {
             println("C2")
             return
+        }
+        if (event.outcome == 0L) {
+            revertSaga()
         }
         state = newState
         sendBookTransport()
@@ -231,20 +231,23 @@ public class TripReservationOrchestrator(
         if (state < State.SENT_UPDATE_BOOKING_PREFERENCES) {
             return
         }
-        TODO()
     }
 
     fun revertBookTransport() {
         if (state < State.SENT_BOOK_TRANSPORT) {
             return
         }
-        TODO()
+        // TODO()
     }
 
     fun revertBookTrip() {
         if (state < State.SENT_BOOK_TRIP) {
             return
         }
-        TODO()
+        template.convertAndSend(
+            queueConfig.base,
+            queueConfig.transactionCancelBookTrip,
+            Json.encodeToString(CancelBookTripMessage(sagaId, userId, tripId)),
+        )
     }
 }

@@ -4,8 +4,8 @@ import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.DirectExchange
 import org.springframework.amqp.core.FanoutExchange
-import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.core.Queue
+import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -50,7 +50,7 @@ class AppConfig {
         transactionsQueue: Queue,
     ): Binding {
         return BindingBuilder.bind(transactionsQueue).to(exchange).with(
-            "${queueConfig.transactions}.*"
+            "${queueConfig.transactions}.*",
         )
     }
 
@@ -65,21 +65,21 @@ class AppConfig {
         eventsQueue: Queue,
     ): Binding {
         return BindingBuilder.bind(eventsQueue).to(exchange).with(
-            "${queueConfig.events}.*"
+            "${queueConfig.events}.*",
         )
     }
 
     @Bean
     fun tourOperatorBinding(eventsQueue: Queue): Binding {
         return BindingBuilder.bind(eventsQueue).to(
-            FanoutExchange(queueConfig.externalEventPaymentProcessedExchange)
+            FanoutExchange(queueConfig.externalEventPaymentProcessedExchange),
         )
     }
 
     @Bean
     fun transportReservationsBinding(eventsQueue: Queue): Binding {
         return BindingBuilder.bind(eventsQueue).to(
-            FanoutExchange(queueConfig.externalTransactionProcessPaymentExchange)
+            FanoutExchange(queueConfig.externalTransactionProcessPaymentExchange),
         )
     }
 
