@@ -1,5 +1,7 @@
 package pl.edu.pg.rsww.apigateway
 
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -37,6 +39,29 @@ public class RoutingController(
             return builder.body("")
         }
         val builder = ResponseEntity.status(200)
+        if (path.contains("create_reservation")) {
+            val reservedUntil = DateTimeFormatter.ISO_INSTANT.format(
+                Instant.now().plusSeconds(60)
+            )
+            println(params)
+            return builder.body(
+                """{
+                  "id": ${params["id"]},
+                  "reserved_until": "$reservedUntil"
+                }""",
+            )
+        }
+        if (path.contains("confirm_reservation")) {
+            println(params)
+            return builder.body(
+                """
+                <p>Congratulations, you bought it!</p>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/search.html" hx-target="#container">Go back to tour list</button>
+                """,
+            )
+        }
         if (path.contains("get_trips")) {
             val n: Int = params["n"]?.toInt() ?: 0
             val next = n + 1
@@ -53,8 +78,44 @@ public class RoutingController(
         if (path.contains("trip")) {
             return builder.body(
                 """{
-	  "name": "Trip no. ${params["id"]}",
-	  "description": "A slightly longer description for trip number ${params["id"]}"
+      "id": "${params["id"]}",
+      "name": "Trip no. ${params["id"]}",
+      "description": "A slightly longer description for trip number ${params["id"]}",
+      "hotel": {
+        "title": "Hotel Angela Beach",
+        "hotel_rating": 35,
+        "destination": {
+          "title": "Korfu",
+          "country": {
+            "title": "Grecja"
+          }
+        },
+        "latitude": 39.794014,
+        "longitude": 19.76343,
+        "meals": [
+          "All inclusive",
+          "Wy\u017cywienie zgodnie z programem"
+        ],
+        "rooms": [
+          {
+            "title": "superior",
+            "bed_count": 2,
+            "extra_bed_count": 1
+          },
+          {
+            "title": "rodzinny",
+            "bed_count": 2,
+            "extra_bed_count": 2
+          }
+        ],
+        "reservation_count": 96,
+        "reservation_limit": 98,
+        "minimum_age": 10,
+        "max_people_per_reservation": 4
+      },
+      "duration": 4,
+      "start_date": "2024-06-29",
+      "end_date": "2024-07-03"
       }""",
             )
         }
