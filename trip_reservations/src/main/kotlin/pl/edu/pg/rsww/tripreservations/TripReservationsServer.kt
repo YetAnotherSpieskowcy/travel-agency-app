@@ -1,27 +1,24 @@
 package pl.edu.pg.rsww.tripreservations
 
-import java.net.HttpCookie
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.springframework.amqp.core.ExchangeTypes
 import org.springframework.amqp.core.Message
-import org.springframework.amqp.rabbit.annotation.Exchange
 import org.springframework.amqp.rabbit.annotation.Queue
-import org.springframework.amqp.rabbit.annotation.QueueBinding
 import org.springframework.amqp.rabbit.annotation.RabbitListener
-import org.springframework.amqp.rabbit.connection.CorrelationData
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import java.net.HttpCookie
 
 public class TripReservationServer(
     @Autowired private val template: RabbitTemplate,
     @Autowired private val controller: TripReservationController,
     @Autowired private val queueConfig: QueueConfig,
 ) {
-
     @RabbitListener(queuesToDeclare = [Queue("#{queueConfig.requests}")])
-    fun requestHandler(payload: String, message: Message) {
+    fun requestHandler(
+        payload: String,
+        message: Message,
+    ) {
         val request = Json.decodeFromString<RequestMessage>(payload)
         val cookieHeader = request.headers["cookie"]
         if (cookieHeader == null) {
@@ -52,7 +49,10 @@ public class TripReservationServer(
     }
 
     @RabbitListener(queuesToDeclare = [Queue("#{queueConfig.transactions}")])
-    fun transactionHandler(payload: String, message: Message) {
+    fun transactionHandler(
+        payload: String,
+        message: Message,
+    ) {
         when (message.messageProperties.receivedRoutingKey) {
             queueConfig.transactionBookTrip -> {
                 val msg = Json.decodeFromString<BookTripMessage>(payload)
@@ -74,7 +74,10 @@ public class TripReservationServer(
     }
 
     @RabbitListener(queuesToDeclare = [Queue("#{queueConfig.events}")])
-    fun eventHandler(payload: String, message: Message) {
+    fun eventHandler(
+        payload: String,
+        message: Message,
+    ) {
         println(message.messageProperties.receivedRoutingKey)
         when (message.messageProperties.receivedRoutingKey) {
             queueConfig.eventTripBooked -> {
