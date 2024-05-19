@@ -36,7 +36,7 @@ public class TripReservationOrchestrator(
         DONE,
     }
 
-    val PIVOT_STATE = State.ACK_PROCESS_PAYMENT
+    val pivotState = State.ACK_PROCESS_PAYMENT
 
     private fun checkState(newState: State): Boolean {
         val expectedState = State.values()[newState.ordinal - 1]
@@ -64,7 +64,7 @@ public class TripReservationOrchestrator(
             .schedule(
                 timerTask {
                     println("WTF")
-                    if (!canceled && state < PIVOT_STATE) {
+                    if (!canceled && state < pivotState) {
                         revertSaga()
                     }
                 },
