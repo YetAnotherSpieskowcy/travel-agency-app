@@ -97,6 +97,7 @@ public class TripReservationOrchestrator(
         }
         if (event.outcome == 0L) {
             revertSaga()
+            return
         }
         state = newState
         sendBookTransport()

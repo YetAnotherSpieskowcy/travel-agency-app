@@ -8,9 +8,14 @@ import com.mongodb.kotlin.client.MongoClient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.bson.Document
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.UUID
 
 data class Entity(
     val entity_id: String,
@@ -18,6 +23,13 @@ data class Entity(
     val last_event_id: Int,
     val data: Document,
 )
+
+object Events : Table("events") {
+    val id = long("id").autoIncrement("public.seq").uniqueIndex()
+    val entityId = uuid("entity_id")
+    val eventName = varchar("event_name", 255)
+    val data = varchar("data", 255)
+}
 
 public class TripReservationController(
     @Autowired private val template: RabbitTemplate,
@@ -34,6 +46,7 @@ public class TripReservationController(
         val dbName = System.getenv("MONGO_DB")
         val host = System.getenv("MONGO_HOSTB")
         val port = System.getenv("MONGO_PORTB")
+
         val connectionString = "mongodb://$userName:$password@$host:$port/"
         val client = MongoClient.create(connectionString)
         val db = client.getDatabase(dbName)
@@ -50,7 +63,27 @@ public class TripReservationController(
 
         val filter = and(eq("entity_id", hotelId), lt("data.reservation_count", limit))
         val update = inc("data.reservation_count", value)
-        return collection.updateOne(filter, update).matchedCount
+
+        val result = collection.updateOne(filter, update).matchedCount
+        val pdbName = System.getenv("POSTGRES_DB")
+        val phost = System.getenv("POSTGRES_HOSTB")
+        val pport = System.getenv("POSTGRES_PORTB")
+        Database.connect(
+            url = "jdbc:postgresql://$phost:$pport/$pdbName",
+            driver = "org.postgresql.Driver",
+            user = System.getenv("POSTGRES_USERNAME"),
+            password = System.getenv("POSTGRES_PASSWORD"),
+        )
+        if (result > 0) {
+            transaction {
+                Events.insert {
+                    it[Events.entityId] = UUID.fromString(hotelId)
+                    it[Events.eventName] = "HotelReservationCountChanged"
+                    it[Events.data] = """{"value":$value}"""
+                }
+            }
+        }
+        return result
     }
 
     fun bookTrip(msg: BookTripMessage) {

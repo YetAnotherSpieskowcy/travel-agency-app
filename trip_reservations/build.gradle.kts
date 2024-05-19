@@ -22,6 +22,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
     implementation("org.mongodb:mongodb-driver-kotlin-sync:5.0.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.exposed:exposed-core:0.38.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.38.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.38.1")
+    implementation("org.postgresql:postgresql:42.3.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
 }
