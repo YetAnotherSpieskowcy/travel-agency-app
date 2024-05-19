@@ -54,7 +54,7 @@ def test_details_view(driver):
     )
     assert (
         driver.find_element(By.XPATH, "/html/body/div/div/div[1]/p[1]").text
-        == "Trip no. 0"
+        == "Trip no. 0 \u2605\u2605\u2605\u2be8"
     )
     assert (
         driver.find_element(By.XPATH, "/html/body/div/div/div[1]/p[2]").text
