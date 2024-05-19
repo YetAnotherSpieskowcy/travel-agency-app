@@ -1,7 +1,5 @@
 package pl.edu.pg.rsww.apigateway
 
-import java.time.Instant
-import java.time.format.DateTimeFormatter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 @RestController
 public class RoutingController(
@@ -40,9 +40,8 @@ public class RoutingController(
         }
         val builder = ResponseEntity.status(200)
         if (path.contains("create_reservation")) {
-            val reservedUntil = DateTimeFormatter.ISO_INSTANT.format(
-                Instant.now().plusSeconds(60)
-            )
+            val reservedUntil =
+                DateTimeFormatter.ISO_INSTANT.format(Instant.now().plusSeconds(60))
             println(params)
             return builder.body(
                 """{
