@@ -39,6 +39,16 @@ public class TripReservationServer(
                 routeId = request.params["route_id"] ?: "",
             )
         }
+        if (request.path == "/confirm_reservation") {
+            if (controller.activeOrchestrators[request.params["sagaId"]] == null) {
+                sendHttpResponse(template, message, """{"success":false}""")
+                return
+            }
+
+            controller.activeOrchestrators[request.params["sagaId"]]?.continuationMessage = message
+            controller.activeOrchestrators[request.params["sagaId"]]?.sendProcessPayment()
+        }
+        sendHttpResponse(template, message, """{"error":"404"}""")
     }
 
     private fun replyUnauthorized(message: Message) {

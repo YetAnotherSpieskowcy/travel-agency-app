@@ -35,7 +35,7 @@ public class TripReservationController(
     @Autowired private val template: RabbitTemplate,
     @Autowired private val queueConfig: QueueConfig,
 ) {
-    private val activeOrchestrators = HashMap<String, TripReservationOrchestrator>()
+    public val activeOrchestrators = HashMap<String, TripReservationOrchestrator>()
 
     fun updateReservationCounter(
         tripId: String,

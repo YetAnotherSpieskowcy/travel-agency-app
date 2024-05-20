@@ -4,6 +4,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.Timer
 import java.util.UUID
 import kotlin.concurrent.timerTask
@@ -154,6 +156,8 @@ public class TripReservationOrchestrator(
         )
     }
 
+    var continuationMessage: Message? = null
+
     fun ackUpdateBookingPreferences(event: BookingPreferencesUpdatedEvent) {
         println("G")
         val newState = State.ACK_UPDATE_BOOKING_PREFERENCES
@@ -162,7 +166,17 @@ public class TripReservationOrchestrator(
             return
         }
         state = newState
-        sendProcessPayment()
+        val reservedUntil = DateTimeFormatter.ISO_INSTANT.format(Instant.now().plusSeconds(60))
+        sendHttpResponse(
+            template,
+            message,
+            """{
+	  "success":${!canceled}
+	  "sagaId":$sagaId,
+	  "reserved_until": "$reservedUntil"
+	  }""",
+        )
+        return
     }
 
     fun sendProcessPayment() {
@@ -228,7 +242,7 @@ public class TripReservationOrchestrator(
     fun done() {
         println("L")
         state = State.DONE
-        sendHttpResponse(template, message, """{"success":${!canceled}}""")
+        sendHttpResponse(template, continuationMessage ?: message, """{"success":${!canceled}}""")
         onDone?.invoke()
     }
 
