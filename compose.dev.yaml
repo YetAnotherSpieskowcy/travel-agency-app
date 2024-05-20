@@ -33,4 +33,6 @@ services:
   transports:
     env_file:
       - ./dev.env
-
+  tour-offers:
+    env_file:
+      - ./dev.env
