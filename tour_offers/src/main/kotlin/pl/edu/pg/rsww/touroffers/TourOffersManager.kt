@@ -141,6 +141,7 @@ public class TourOffersManager {
             result =
                 """
                 {
+                "id": "${id}",
                 "tour": ${tour.data.toJson()},
                 "numPeople": ${numPeople}
                 }

@@ -109,7 +109,7 @@
 					hx-indicator="#indicator-ignore"
 					handlebars-template="trip-price-template"
 				>
-					<input type="hidden" name="trip_id" value="{{tour.id}}" />
+					<input type="hidden" name="trip_id" value="{{id}}" />
 					<input type="hidden" name="destLatitude" value="{{tour.geolocation.lat}}" />
 					<input type="hidden" name="destLongitude" value="{{tour.geolocation.lng}}" />
 					<input type="hidden" name="duration" value="{{tour.duration}}" />
@@ -121,14 +121,14 @@
 							<option value="own">Own transport</option>
 							{{#each tour.hotel_bus_routes}}
 							<option
-								value="bus-{{this.id}}"
+								value="{{this.id}}"
 							>
 								Bus from {{this.origin.city}}
 							</option>
 							{{/each}}
 							{{#each tour.hotel_flight_routes}}
 							<option
-								value="flight-{{this.id}}"
+								value="{{this.id}}"
 							>
 								Flight from {{this.origin.city}}
 							</option>
@@ -154,7 +154,7 @@
 					<button
 						type="button"
 						class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-						hx-get="/api/trip_reservations/create_reservation"
+						hx-get="/api/trip_reservations/start_reservation"
 						hx-include="#trip-reservation-form"
 						hx-target="#container"
 						hx-indicator="#processing-overlay"
