@@ -113,7 +113,7 @@ public class RoutingController(
       "hotel_rating": 35,
       "hotel_reservation_limit": 98,
       "hotel_reservation_count": ${98-rooms_left},
-      "hotel_rooms_left": rooms_left,
+      "hotel_rooms_left": ${rooms_left},
       "hotel_minimum_age": 10,
       "hotel_max_people_per_reservation": 4
       "duration": 4,
