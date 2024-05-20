@@ -15,19 +15,6 @@ public class TourOffersManager {
     val port = System.getenv("MONGO_PORTB")
     val connectionString = "mongodb://$userName:$password@$host:$port/"
 
-    /*fun GetAvailable(db: MongoDatabase): List<String> {
-        val projection = Projection.fields(
-                Projections.include(Entity::entity_id.name),
-                Projection.excludeId()
-        )
-
-        return db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Hotel"))
-                .toList()
-                .filter{
-                    it.data?.getInteger("reservation_count") <= it.data?.getInteger("reservation_limit") ?: false
-                }
-    }*/
-
     fun getTourList(
         destination: String,
         from: String,
@@ -52,8 +39,21 @@ public class TourOffersManager {
 
         var result = ""
 
+        val available =
+            db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Hotel"))
+                .toList()
+                .filter {
+                    it.data.getDouble("reservation_count") < it.data.getDouble("reservation_limit")
+                }
+
         val destCities =
-            db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Tour"))
+            db.getCollection<Entity>("snapshots").find(
+                Filters.and(
+                    Filters.eq(Entity::entity_type.name, "Tour"),
+                    Filters.lte("data.hotel_minimum_age", minAge),
+                    Filters.gte("data.hotel_max_people_per_reservation", numPeople),
+                ),
+            )
                 .toList()
                 .filter {
                     (
@@ -74,9 +74,8 @@ public class TourOffersManager {
                                 true
                             }
                         ) &&
-                        ((it.data?.getDouble("hotel_minimum_age") ?: 18.0) <= minAge) &&
-                        ((it.data?.getDouble("hotel_max_people_per_reservation") ?: 0.0) >= numPeople) &&
-                        (if (departureDate != "") it.data?.getString("start_date") == departureDate ?: false else true)
+                        (if (departureDate != "") it.data?.getString("start_date") == departureDate ?: false else true) &&
+                        available.any { a -> a.entity_id == it.data?.getString("hotel") }
                 }
 
         if (destCities != null) {
@@ -99,7 +98,7 @@ public class TourOffersManager {
                                         text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all 
                                         hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none 
                                         disabled:opacity-50 disabled:shadow-none"
-                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}" hx-target="#container" mustache-template="trip_details"
+                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&numPeople=$numPeople" hx-target="#container" mustache-template="trip_details"
                                         hx-swap="innerHTML" value="Szczegóły">
                                 </div>
                             </div>
@@ -119,7 +118,10 @@ public class TourOffersManager {
         return result
     }
 
-    fun getTourDetails(id: String): String {
+    fun getTourDetails(
+        id: String,
+        numPeople: Int,
+    ): String {
         val client = MongoClient.create(connectionString = connectionString)
         val db = client.getDatabase(databaseName = dbName)
 
@@ -138,7 +140,17 @@ public class TourOffersManager {
                 .toList()
                 .firstOrNull()
         if (tour != null) {
-            result = tour.data.toJson()
+            val hotel =
+                db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_id.name, tour.data.getString("hotel")))
+                    .toList()
+                    .firstOrNull()
+            val limit = hotel?.data?.getDouble("reservation_limit") ?: 0.0
+            val count = hotel?.data?.getDouble("reservation_count") ?: limit
+            val availableRooms = limit - count
+            result =
+                tour.data.append("numPeople", numPeople)
+                    .append("availableRooms", availableRooms)
+                    .toJson()
         }
         client.close()
         return result
