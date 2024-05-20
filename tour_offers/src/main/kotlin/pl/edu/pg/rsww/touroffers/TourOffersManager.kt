@@ -39,16 +39,21 @@ public class TourOffersManager {
 
         var result = ""
 
-        val available = db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Hotel"))
+        val available =
+            db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Hotel"))
                 .toList()
-                .filter{
+                .filter {
                     it.data?.getDouble("reservation_count") ?: 100.0 < it.data?.getDouble("reservation_limit") ?: 90.0
                 }
 
         val destCities =
-            db.getCollection<Entity>("snapshots").find(Filters.and(Filters.eq(Entity::entity_type.name, "Tour"),
+            db.getCollection<Entity>("snapshots").find(
+                Filters.and(
+                    Filters.eq(Entity::entity_type.name, "Tour"),
                     Filters.lte("data.hotel_minimum_age", minAge),
-                    Filters.gte("data.hotel_max_people_per_reservation", numPeople)))
+                    Filters.gte("data.hotel_max_people_per_reservation", numPeople),
+                ),
+            )
                 .toList()
                 .filter {
                     (
@@ -70,7 +75,7 @@ public class TourOffersManager {
                             }
                         ) &&
                         (if (departureDate != "") it.data?.getString("start_date") == departureDate ?: false else true) &&
-                            available.any { a -> a.entity_id == it.data?.getString("hotel") }
+                        available.any { a -> a.entity_id == it.data?.getString("hotel") }
                 }
 
         if (destCities != null) {
@@ -93,7 +98,7 @@ public class TourOffersManager {
                                         text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all 
                                         hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none 
                                         disabled:opacity-50 disabled:shadow-none"
-                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&numPeople=${numPeople}" hx-target="#container" mustache-template="trip_details"
+                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&numPeople=$numPeople" hx-target="#container" mustache-template="trip_details"
                                         hx-swap="innerHTML" value="Szczegóły">
                                 </div>
                             </div>
@@ -113,7 +118,10 @@ public class TourOffersManager {
         return result
     }
 
-    fun getTourDetails(id: String, numPeople: Int): String {
+    fun getTourDetails(
+        id: String,
+        numPeople: Int,
+    ): String {
         val client = MongoClient.create(connectionString = connectionString)
         val db = client.getDatabase(databaseName = dbName)
 
@@ -132,13 +140,15 @@ public class TourOffersManager {
                 .toList()
                 .firstOrNull()
         if (tour != null) {
-            val hotel = db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_id.name, tour.data.getString("hotel")))
+            val hotel =
+                db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_id.name, tour.data.getString("hotel")))
                     .toList()
                     .firstOrNull()
             val limit = hotel?.data?.getDouble("reservation_limit") ?: 0.0
             val count = hotel?.data?.getDouble("reservation_count") ?: limit
             val availableRooms = limit - count
-            result = tour.data.append("numPeople", numPeople)
+            result =
+                tour.data.append("numPeople", numPeople)
                     .append("availableRooms", availableRooms)
                     .toJson()
         }
