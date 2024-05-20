@@ -171,8 +171,8 @@ public class TripReservationOrchestrator(
             template,
             message,
             """{
-	  "success":${!canceled}
-	  "sagaId":$sagaId,
+	  "success":${!canceled},
+	  "sagaId":"$sagaId",
 	  "reserved_until": "$reservedUntil"
 	  }""",
         )
