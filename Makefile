@@ -58,7 +58,7 @@ dev-fill-db:
 build:
 	docker compose build
 	# build db_scripts image
-	docker build -t $(DB_SCRIPTS_IMAGE_NAME) db_scripts/
+	$(MAKE) build-db-scripts
 
 # [ran on a dev machine]
 # Builds images for the development stack
@@ -66,6 +66,12 @@ build:
 build-dev:
 	docker compose -f compose.yaml -f compose.dev.yaml build
 	# build db_scripts image
+	$(MAKE) build-db-scripts
+
+# [ran on a dev machine]
+# Builds db_scripts image
+.PHONY: build-dev
+build-db-scripts:
 	docker build -t $(DB_SCRIPTS_IMAGE_NAME) db_scripts/
 
 # [ran on a dev machine]

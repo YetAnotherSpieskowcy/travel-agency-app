@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 
 @RestController
 public class RoutingController(
@@ -40,6 +41,7 @@ public class RoutingController(
         }
         val builder = ResponseEntity.status(200)
         if (path.contains("create_reservation")) {
+            TimeUnit.SECONDS.sleep(3L)
             val reservedUntil =
                 DateTimeFormatter.ISO_INSTANT.format(Instant.now().plusSeconds(60))
             println(params)
@@ -51,6 +53,7 @@ public class RoutingController(
             )
         }
         if (path.contains("confirm_reservation")) {
+            TimeUnit.SECONDS.sleep(3L)
             println(params)
             return builder.body(
                 """

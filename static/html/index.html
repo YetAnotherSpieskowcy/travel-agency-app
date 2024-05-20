@@ -3,6 +3,23 @@
 
 <head>
 	<title>Travel agency app</title>
+	<style>
+		.htmx-settling {
+		    opacity: 0;
+		}
+		.htmx-indicator {
+			display: none !important;
+		}
+		 .htmx-request.htmx-indicator {
+			display: block !important;
+		}
+		img {
+		    transition: opacity 300ms ease-in;
+		}
+		#indicator-ignore {
+			display: none !important;
+		}
+	</style>
 </head>
 
 <body>
@@ -12,14 +29,28 @@
 	<script src="https://cdn.tailwindcss.com"></script>
 	<span hx-get="/api/test" hx-trigger="load"></span>
 	<button type="button" hx-get="/api/auth/logout">Logout</button>
-	<div id="container" hx-get="/search.html" hx-trigger="load" class="md:container md:mx-auto px-8"
-		hx-ext="client-side-templates">
-
+	<div class="relative" hx-indicator="#processing-overlay">
+		<div id="processing-overlay" class="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center htmx-indicator">
+			<div class="flex items-center">
+				<span class="text-3xl mr-4">Processing...</span>
+				<svg class="animate-spin h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none"
+		        viewBox="0 0 24 24">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+					<path class="opacity-75" fill="currentColor"
+		          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+					</path>
+				</svg>
+			</div>
+		</div>
+		<div id="container" hx-get="/search.html" hx-trigger="load" class="md:container md:mx-auto px-8"
+			hx-ext="client-side-templates">
+		</div>
+		<div id="indicator-ignore" class="htmx-indicator"></div>
 	</div>
 	<template id="trip">
 		<div
 			class="my-3 rounded-md outline-1 box-border border-2 shadow-md flex justify-between gap-x-6 py-5 flex min-w-0 gap-x-4 space-x-4 px-5"
-			hx-get="/api/mocked/get_trips/?n={{n}}" hx-include="[name='search']" hx-trigger="revealed" hx-swap="afterend"
+			hx-get="/api/mocked/get_trips/?n={{n}}" hx-include="[name='search']" hx-trigger="revealed" hx-swap="afterend" hx-indicator="#indicator-ignore"
 			handlebars-template="trip">
 			<div>
 				<p class="break-afer-auto text-base font-semibold leading-6 text-gray-900">
@@ -66,6 +97,7 @@
 					hx-get="/api/price_calculator/calculate_price"
 					hx-trigger="load, every 5s, change"
 					hx-target="#trip-price"
+					hx-indicator="#indicator-ignore"
 					handlebars-template="trip-price-template"
 				>
 					<!-- TODO: we do not have geolocation data for bus/flight stops, only for hotels -->
@@ -100,6 +132,7 @@
 						hx-get="/api/mocked/create_reservation"
 						hx-include="#trip-reservation-form"
 						hx-target="#container"
+						hx-indicator="#processing-overlay"
 						handlebars-template="active-reservation"
 					>
 						Start reservation
@@ -109,11 +142,12 @@
 		</div>
 	</template>
 	<template id="active-reservation">
-		<div class="py-4">
+		<div id="reservation-status" class="py-4">
 			Reservation active, time left:
 			<span id="reservation-time-left">60 seconds</span>
 		</div>
 		<form
+			id="purchase-form"
 			hx-get="/api/mocked/confirm_reservation"
 			hx-target="#container"
 			class="py-4"
@@ -126,17 +160,28 @@
 				Purchase the offer
 			</button>
 		</form>
+		<button id="cancel-button"
+			type="button"
+			class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+			hx-get="/search.html" hx-target="#container">Cancel</button>
 		<script type="text/javascript">
 			let reservedUntil = Date.parse("{{{reserved_until}}}");
 			let interval = setInterval(() => {
 				let now = new Date().getTime()
 				let duration = reservedUntil - now
 				let seconds = Math.floor(duration / 1000)
-				let el = document.getElementById("reservation-time-left")
-				el.innerHTML = `${seconds} seconds`
 				if (seconds < 0) {
 					clearInterval(interval)
+					let el = document.getElementById("purchase-form")
+					el.remove()
+					el = document.getElementById("cancel-button")
+					el.innerHTML = "Go back to tour search"
+					el = document.getElementById("reservation-status")
+					el.innerHTML = "Reservation expired"
+					return
 				}
+				let el = document.getElementById("reservation-time-left")
+				el.innerHTML = `${seconds} seconds`
 			}, 1000)
 		</script>
 	</template>
