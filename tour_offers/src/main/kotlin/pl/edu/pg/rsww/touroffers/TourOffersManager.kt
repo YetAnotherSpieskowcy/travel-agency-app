@@ -99,7 +99,7 @@ public class TourOffersManager {
                                         text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all 
                                         hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none 
                                         disabled:opacity-50 disabled:shadow-none"
-                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}" hx-target="#container" handlebars-template="trip_details"
+                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&num_people=${numPeople}" hx-target="#container" handlebars-template="trip_details"
                                         hx-swap="innerHTML" value="Szczegóły">
                                 </div>
                             </div>
@@ -119,7 +119,7 @@ public class TourOffersManager {
         return result
     }
 
-    fun getTourDetails(id: String): String {
+    fun getTourDetails(id: String, numPeople: Int): String {
         val client = MongoClient.create(connectionString = connectionString)
         val db = client.getDatabase(databaseName = dbName)
 
@@ -138,7 +138,13 @@ public class TourOffersManager {
                 .toList()
                 .firstOrNull()
         if (tour != null) {
-            result = tour.data.toJson()
+            result =
+                """
+                {
+                "tour": ${tour.data.toJson()},
+                "numPeople": ${numPeople}
+                }
+                """.trimIndent()
         }
         client.close()
         return result
