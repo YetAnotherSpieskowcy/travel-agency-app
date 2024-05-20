@@ -22,6 +22,7 @@ public class TripReservationOrchestrator(
     var state = State.WAITING_TO_START
     var canceled = false
     var completed = false
+    var startReservationResponseSent = false
     var onDone: (() -> Unit)? = null
 
     enum class State {
@@ -176,6 +177,7 @@ public class TripReservationOrchestrator(
 	  "reserved_until": "$reservedUntil"
 	  }""",
         )
+        startReservationResponseSent = true
         return
     }
 
@@ -242,12 +244,23 @@ public class TripReservationOrchestrator(
     fun done() {
         println("L")
         state = State.DONE
-        if (canceled) {
+        if (canceled && startReservationResponseSent) {
             sendHttpResponse(
                 template,
                 continuationMessage ?: message,
                 """
                 <p>Something went wrong, possibly payment was rejected.</p>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/search.html" hx-target="#container">Go back to tour list</button>
+                """,
+            )
+        } else if (canceled) {
+            sendHttpResponse(
+                template,
+                continuationMessage ?: message,
+                """
+                <p>Something went wrong, possibly reservation count was exceeded.</p>
                 <button type="button"
                     class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                     hx-get="/search.html" hx-target="#container">Go back to tour list</button>
