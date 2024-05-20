@@ -158,7 +158,7 @@ public class RoutingController(
 
         val exchangeName = "$serviceName.requests"
         val rawResponse =
-            template.convertSendAndReceive(exchangeName, exchangeName, rawMsg as Any) as String
+            template.convertSendAndReceive(exchangeName, exchangeName, rawMsg as Any) as String?
         if (rawResponse == null) {
             // the request timed out waiting for the response message in the queue
             return ResponseEntity
