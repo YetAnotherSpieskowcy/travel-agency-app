@@ -43,7 +43,7 @@ public class TourOffersManager {
             db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Hotel"))
                 .toList()
                 .filter {
-                    it.data?.getDouble("reservation_count") ?: 100.0 < it.data?.getDouble("reservation_limit") ?: 90.0
+                    it.data.getDouble("reservation_count") < it.data.getDouble("reservation_limit")
                 }
 
         val destCities =
