@@ -138,14 +138,7 @@ public class TourOffersManager {
                 .toList()
                 .firstOrNull()
         if (tour != null) {
-            result = tour.data?.toJson()
-                ?:
-                    """
-                    {
-                            "name": "Coś poszło nie tak...",
-                            "description": "Brak danych"
-                    }
-                    """.trimIndent()
+            result = tour.data.toJson()
         }
         client.close()
         return result

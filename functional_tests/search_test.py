@@ -33,6 +33,7 @@ def test_search_string(driver):
         "Kolumbia" in results().find_element(By.XPATH, "//div/div/p[2]").text
     )
 
+
 @pytest.mark.skip()
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_details_view(driver):
