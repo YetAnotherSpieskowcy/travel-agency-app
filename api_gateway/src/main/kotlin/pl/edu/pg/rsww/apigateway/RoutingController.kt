@@ -40,6 +40,10 @@ public class RoutingController(
             return builder.body("")
         }
         val builder = ResponseEntity.status(200)
+        if (path.contains("trip_rooms_left")) {
+            println(params)
+            return builder.body("${(0..6).random()}")
+        }
         if (path.contains("create_reservation")) {
             TimeUnit.SECONDS.sleep(3L)
             val reservedUntil =
@@ -78,43 +82,40 @@ public class RoutingController(
             )
         }
         if (path.contains("trip")) {
+            val rooms_left = (0..6).random()
             return builder.body(
                 """{
       "id": "${params["id"]}",
       "name": "Trip no. ${params["id"]}",
       "description": "A slightly longer description for trip number ${params["id"]}",
-      "hotel": {
-        "title": "Hotel Angela Beach",
-        "hotel_rating": 35,
-        "destination": {
-          "title": "Korfu",
-          "country": {
-            "title": "Grecja"
-          }
-        },
-        "latitude": 39.794014,
-        "longitude": 19.76343,
-        "meals": [
-          "All inclusive",
-          "Wy\u017cywienie zgodnie z programem"
-        ],
-        "rooms": [
-          {
-            "title": "superior",
-            "bed_count": 2,
-            "extra_bed_count": 1
-          },
-          {
-            "title": "rodzinny",
-            "bed_count": 2,
-            "extra_bed_count": 2
-          }
-        ],
-        "reservation_count": 96,
-        "reservation_limit": 98,
-        "minimum_age": 10,
-        "max_people_per_reservation": 4
+      "hotel_meal_titles": [
+        "All inclusive",
+        "Wy\u017cywienie zgodnie z programem"
+      ],
+      "geolocation": {
+        "lat": 39.794014,
+        "lng": 19.76343
       },
+      "hotel_destination_country_title": "Grecja",
+      "hotel_destination_city_title": "Korfu",
+      "hotel_rooms": [
+        {
+          "title": "superior",
+          "bed_count": 2,
+          "extra_bed_count": 1
+        },
+        {
+          "title": "rodzinny",
+          "bed_count": 2,
+          "extra_bed_count": 2
+        }
+      ],
+      "hotel_rating": 35,
+      "hotel_reservation_limit": 98,
+      "hotel_reservation_count": ${98-rooms_left},
+      "hotel_rooms_left": rooms_left,
+      "hotel_minimum_age": 10,
+      "hotel_max_people_per_reservation": 4
       "duration": 4,
       "start_date": "2024-06-29",
       "end_date": "2024-07-03"
