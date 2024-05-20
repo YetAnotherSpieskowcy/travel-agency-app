@@ -32,9 +32,7 @@ public class TourOffersServer {
         }
 
         if (request.path.contains("trip_details")) {
-            val result = tourOffersManager.getTourDetails(
-                request.params["id"] ?: "", request.params["num_people"]?.toInt() ?: 1
-            )
+            val result = tourOffersManager.getTourDetails(request.params["id"] ?: "", request.params["numPeople"]?.toInt() ?: 0)
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
             return rawResp
