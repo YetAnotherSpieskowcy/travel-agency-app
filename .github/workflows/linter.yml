@@ -26,6 +26,7 @@ jobs:
           VALIDATE_PYTHON_PYLINT: false
           VALIDATE_HTML: false # HtmlHint does not allow to selectively ignore the rules
           VALIDATE_ANSIBLE: false # super-linter thinks we have playbooks here but later fails because we don't
+          VALIDATE_SQL: false # sql-lint have trubles with postgres dialect
           DEFAULT_BRANCH: origin/main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JAVASCRIPT_DEFAULT_STYLE: prettier
