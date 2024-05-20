@@ -22,7 +22,7 @@ def base_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--incognito")
     options.add_argument("--disable-site-isolation-trials")
-    #options.add_argument("--headless")
+    options.add_argument("--headless")
     driver = webdriver.Chrome(options=options)
 
     yield driver
