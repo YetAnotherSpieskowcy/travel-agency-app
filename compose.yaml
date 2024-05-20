@@ -43,3 +43,9 @@ services:
         context: ./transports
     env_file:
       - ./default.env
+  tour-offers:
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_tour_offers
+    build:
+        context: ./tour_offers
+    env_file:
+      - ./default.env
