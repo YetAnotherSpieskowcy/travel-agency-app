@@ -38,6 +38,7 @@ public class TripReservationServer(
                 tripId = request.params["trip_id"] ?: "",
                 routeId = request.params["route_id"] ?: "",
             )
+            return
         }
         if (request.path == "/confirm_reservation") {
             if (controller.activeOrchestrators[request.params["sagaId"]] == null) {
@@ -47,6 +48,7 @@ public class TripReservationServer(
 
             controller.activeOrchestrators[request.params["sagaId"]]?.continuationMessage = message
             controller.activeOrchestrators[request.params["sagaId"]]?.sendProcessPayment()
+            return
         }
         sendHttpResponse(template, message, """{"error":"404"}""")
     }
