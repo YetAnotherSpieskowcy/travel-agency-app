@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.touroperator
+package pl.edu.pg.rsww.transports
 
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
@@ -12,8 +12,7 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class AppConfig {
-    @Autowired
-    lateinit var queueConfig: QueueConfig
+    @Autowired lateinit var queueConfig: QueueConfig
 
     @Bean
     fun requestsQueue(): Queue {
@@ -30,7 +29,9 @@ class AppConfig {
         exchange: DirectExchange,
         requestsQueue: Queue,
     ): Binding {
-        return BindingBuilder.bind(requestsQueue).to(exchange).with(queueConfig.requests)
+        return BindingBuilder.bind(requestsQueue)
+            .to(DirectExchange("transports"))
+            .with("${queueConfig.requests}.*")
     }
 
     @Bean
@@ -48,9 +49,11 @@ class AppConfig {
         exchange: DirectExchange,
         transactionsQueue: Queue,
     ): Binding {
-        return BindingBuilder.bind(transactionsQueue).to(DirectExchange("tour_operator")).with(
-            "${queueConfig.transactions}.*",
-        )
+        return BindingBuilder.bind(transactionsQueue)
+            .to(DirectExchange("transports"))
+            .with(
+                "${queueConfig.transactions}.*",
+            )
     }
 
     @Bean
@@ -72,7 +75,7 @@ class AppConfig {
     }
 
     @Bean
-    fun server(): TourOperatorServer {
-        return TourOperatorServer()
+    fun server(): TransportsServer {
+        return TransportsServer()
     }
 }

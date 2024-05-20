@@ -29,7 +29,12 @@ CREATE TABLE IF NOT EXISTS events
     -- Event name, e.g. BusCreated, HotelReservationCountChanged
     event_name VARCHAR NOT NULL,
     -- Event data blob - JSON object for *Created events, (JSON) integer for *Changed events
-    data JSONB NOT NULL,
+    data VARCHAR NOT NULL,
 
     change_time TIMESTAMP NOT NULL DEFAULT now()
 );
+
+CREATE SEQUENCE public.seq
+INCREMENT 1
+START 700000
+MINVALUE 1;
