@@ -35,7 +35,8 @@ public class TripReservationServer(
             controller.startReservation(
                 message = message,
                 userId = userId,
-                tripId = request.params["id"] ?: "",
+                tripId = request.params["trip_id"] ?: "",
+                routeId = request.params["route_id"] ?: "",
             )
         }
     }

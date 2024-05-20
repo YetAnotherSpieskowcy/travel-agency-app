@@ -64,7 +64,7 @@ public class TripReservationController(
         val filter = and(eq("entity_id", hotelId), lt("data.reservation_count", limit))
         val update = inc("data.reservation_count", value)
 
-        val result = collection.updateOne(filter, update).matchedCount
+        var result = collection.updateOne(filter, update).modifiedCount
         val pdbName = System.getenv("POSTGRES_DB")
         val phost = System.getenv("POSTGRES_HOSTB")
         val pport = System.getenv("POSTGRES_PORTB")
@@ -79,7 +79,7 @@ public class TripReservationController(
                 Events.insert {
                     it[Events.entityId] = UUID.fromString(hotelId)
                     it[Events.eventName] = "HotelReservationCountChanged"
-                    it[Events.data] = """{"value":$value}"""
+                    it[Events.data] = """$value"""
                 }
             }
         }
@@ -97,7 +97,7 @@ public class TripReservationController(
     }
 
     fun cancelBookTrip(msg: CancelBookTripMessage) {
-        val result = updateReservationCounter(msg.tripId, -1)
+        updateReservationCounter(msg.tripId, -1)
         template.convertAndSend(
             queueConfig.base,
             queueConfig.eventTripCanceled,
@@ -136,12 +136,14 @@ public class TripReservationController(
         message: Message,
         userId: String,
         tripId: String,
+        routeId: String,
     ) {
         val orchestrator =
             TripReservationOrchestrator(
                 message = message,
                 userId = userId,
                 tripId = tripId,
+                routeId = routeId,
                 template = template,
                 queueConfig = queueConfig,
             )

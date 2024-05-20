@@ -1,4 +1,4 @@
-package pl.edu.pg.rsww.tripreservations
+package pl.edu.pg.rsww.transports
 
 import kotlinx.serialization.Serializable
 

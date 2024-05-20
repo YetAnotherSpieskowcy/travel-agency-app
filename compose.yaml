@@ -37,3 +37,9 @@ services:
       context: ./auth
     env_file:
       - ./default.env
+  transports:
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_transports
+    build:
+        context: ./transports
+    env_file:
+      - ./default.env

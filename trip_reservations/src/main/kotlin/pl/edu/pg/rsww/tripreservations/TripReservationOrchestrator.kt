@@ -12,12 +12,14 @@ public class TripReservationOrchestrator(
     val message: Message,
     val userId: String,
     val tripId: String,
+    val routeId: String,
     val template: RabbitTemplate,
     val queueConfig: QueueConfig,
 ) {
     val sagaId = UUID.randomUUID().toString()
     var state = State.WAITING_TO_START
     var canceled = false
+    var completed = false
     var onDone: (() -> Unit)? = null
 
     enum class State {
@@ -52,6 +54,8 @@ public class TripReservationOrchestrator(
         return canceled
     }
 
+    val timer = Timer()
+
     fun start() {
         println("A")
         val newState = State.STARTED
@@ -60,16 +64,15 @@ public class TripReservationOrchestrator(
             return
         }
         state = newState
-        Timer()
-            .schedule(
-                timerTask {
-                    println("WTF")
-                    if (!canceled && state < pivotState) {
-                        revertSaga()
-                    }
-                },
-                60000,
-            )
+        timer.schedule(
+            timerTask {
+                println("WTF")
+                if (!canceled && state < pivotState) {
+                    revertSaga()
+                }
+            },
+            60000,
+        )
         sendBookTrip()
     }
 
@@ -91,6 +94,7 @@ public class TripReservationOrchestrator(
     fun ackBookTrip(event: TripBookedEvent) {
         println("C")
         val newState = State.ACK_BOOK_TRIP
+
         if (checkState(newState)) {
             println("C2")
             return
@@ -110,16 +114,10 @@ public class TripReservationOrchestrator(
             println("D2")
             return
         }
-        // BEGIN temp fix for lack of transport_reservations service implementation
-        state = newState
-        ackBookTransport(TransportBookedEvent("", "", ""))
-        return
-        // END temp fix for lack of transport_reservations service implementation
         template.convertAndSend(
             queueConfig.externalTransactionBookTransportExchange,
             queueConfig.externalTransactionBookTransportKey,
-            // TODO: replace tripId with routeId
-            Json.encodeToString(BookTransportMessage(sagaId, userId, tripId)),
+            Json.encodeToString(BookTransportMessage(sagaId, userId, routeId)),
         )
         state = newState
     }
@@ -131,6 +129,11 @@ public class TripReservationOrchestrator(
             println("E2")
             return
         }
+        if (event.outcome == 0L) {
+            revertSaga()
+            return
+        }
+
         state = newState
         sendUpdateBookingPreferences()
     }
@@ -142,13 +145,13 @@ public class TripReservationOrchestrator(
             println("F2")
             return
         }
+        state = newState
         template.convertAndSend(
             queueConfig.base,
             queueConfig.transactionUpdateBookingPreferences,
             // TODO: establish what should be inside this message
             Json.encodeToString(UpdateBookingPreferencesMessage(sagaId)),
         )
-        state = newState
     }
 
     fun ackUpdateBookingPreferences(event: BookingPreferencesUpdatedEvent) {
@@ -184,6 +187,13 @@ public class TripReservationOrchestrator(
             println("I2")
             return
         }
+        if (event.success) {
+            println("Payment fail")
+            revertSaga()
+            return
+        }
+        timer.cancel()
+
         state = newState
         sendConfirmPurchase()
     }
@@ -195,12 +205,13 @@ public class TripReservationOrchestrator(
             println("J2")
             return
         }
-        template.convertAndSend(
-            queueConfig.externalTransactionProcessPaymentExchange,
-            queueConfig.externalTransactionProcessPaymentKey,
-            Json.encodeToString(ProcessPaymentMessage(sagaId)),
-        )
+        //    template.convertAndSend(
+        //        queueConfig.externalTransactionProcessPaymentExchange,
+        //        queueConfig.externalTransactionProcessPaymentKey,
+        //        Json.encodeToString(ProcessPaymentMessage(sagaId)),
+        //    )
         state = newState
+        ackConfirmPurchase(PurchaseConfirmedEvent("", "", ""))
     }
 
     fun ackConfirmPurchase(event: PurchaseConfirmedEvent) {
@@ -217,15 +228,17 @@ public class TripReservationOrchestrator(
     fun done() {
         println("L")
         state = State.DONE
+        sendHttpResponse(template, message, """{"success":${!canceled}}""")
         onDone?.invoke()
     }
 
     fun revertSaga() {
         canceled = true
+        timer.cancel()
         revertUpdateBookingPreferences()
         revertBookTransport()
         revertBookTrip()
-        onDone?.invoke()
+        done()
     }
 
     fun revertUpdateBookingPreferences() {
@@ -235,14 +248,18 @@ public class TripReservationOrchestrator(
     }
 
     fun revertBookTransport() {
-        if (state < State.SENT_BOOK_TRANSPORT) {
+        if (state <= State.SENT_BOOK_TRANSPORT) {
             return
         }
-        // TODO()
+        template.convertAndSend(
+            queueConfig.externalTransactionBookTransportExchange,
+            queueConfig.externalTransactionCancelBookTransportKey,
+            Json.encodeToString(BookTransportMessage(sagaId, userId, routeId)),
+        )
     }
 
     fun revertBookTrip() {
-        if (state < State.SENT_BOOK_TRIP) {
+        if (state <= State.SENT_BOOK_TRIP) {
             return
         }
         template.convertAndSend(

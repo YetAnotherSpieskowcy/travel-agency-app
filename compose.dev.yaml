@@ -5,6 +5,8 @@ services:
         - path: ./static/html
           action: sync
           target: /data/www
+    depends_on:
+      - api-gateway
   api-gateway:
     develop:
       watch:
@@ -26,6 +28,9 @@ services:
     env_file:
       - ./dev.env
   trip-reservations:
+    env_file:
+      - ./dev.env
+  transports:
     env_file:
       - ./dev.env
 
