@@ -1,14 +1,23 @@
-<input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
-    name="destination" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
-    hx-target="#results" class="form-control" type="search" />
-<input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
-       name="from" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
-       hx-target="#results" class="form-control" type="search"  />
-<!--mustache-template="trip"
-<input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
-       name="num_adults" hx-get="/api/tour_offers/get_trips" hx-trigger="input changed delay 250ms, search" hx-swap="innerHTML"
-       hx-target="#results" class="form-control" type="number" mustache-template="trip" />-->
-
+<form hx-get="/api/tour_offers/get_trips" hx-target="#results" hx-swap="innerHTML">
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+            id="destination" name="destination" class="form-control" type="search" />
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+            id="from" name="from" class="form-control" type="search"  />
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+           id="dep_date" name="dep_date" class="form-control" type="date" />
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+           id="num_adults" name="num_adults" class="form-control" type="number" min="1"  value="1"/>
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+           id="num_under_3" name="num_under_3" class="form-control" type="number" min="0"  value="0"/>
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+           id="num_under_10" name="num_under_10" class="form-control" type="number" min="0"  value="0"/>
+    <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
+           id="num_under_18" name="num_under_18" class="form-control" type="number" min="0"  value="0"/>
+    <input type="submit" value="Submit"
+           class="select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle
+           font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring
+           focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+</form>
 <div id="results">
-    <p class="my-10 items-center text-center justify-between mx-auto">Start typing to see the results...</p>
+    <p class="my-10 items-center text-center justify-between mx-auto">Zacznij pisać, aby wyświetlić listę...</p>
 </div>
