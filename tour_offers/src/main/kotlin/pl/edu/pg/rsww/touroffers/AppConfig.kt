@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-
 @Configuration
 class AppConfig {
     @Autowired
@@ -25,7 +24,10 @@ class AppConfig {
     }
 
     @Bean
-    fun requestsBinding(exchange: DirectExchange, queue: Queue): Binding {
+    fun requestsBinding(
+        exchange: DirectExchange,
+        queue: Queue,
+    ): Binding {
         return BindingBuilder.bind(queue).to(exchange).with(queueConfig.requests)
     }
 

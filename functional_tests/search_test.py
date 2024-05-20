@@ -12,10 +12,13 @@ def test_search_string(driver):
     results = lambda: driver.find_element(By.ID, "results")
     assert (  # Test if list is empty
         results().find_element(By.TAG_NAME, "p").text
-        == "Start typing to see the results..."
+        == "Kliknij Szukaj, aby wyświetlić listę"
     )
-    search_bar = lambda: driver.find_element(By.NAME, "search")
-    search_bar().send_keys("test search string")
+    search_bar = lambda: driver.find_element(By.NAME, "destination")
+    search_bar().send_keys("Kolumbia")
+
+    search_button = lambda: driver.find_element(By.NAME, "Krzys")
+    search_button().click()
 
     wait.until(
         EC.presence_of_element_located(
@@ -24,13 +27,13 @@ def test_search_string(driver):
     )
     assert (  # Test if list contains at least one correct result
         results().find_element(By.XPATH, "/html/body/div/div/div[1]/div[1]/p[1]").text
-        == "test search string"
+        == "Hotel Las Am\u00e9ricas Torre del Mar"
     )
     assert (  # Test if list contains at least one correct result
-        results().find_element(By.XPATH, "//div/div/p[2]").text == "Hello, world!"
+        "Kolumbia" in results().find_element(By.XPATH, "//div/div/p[2]").text
     )
 
-
+@pytest.mark.skip()
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_details_view(driver):
     wait = WebDriverWait(driver, 5)

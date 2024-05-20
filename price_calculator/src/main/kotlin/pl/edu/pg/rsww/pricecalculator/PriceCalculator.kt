@@ -57,7 +57,7 @@ public class PriceCalculator {
         }
         val mealPrice: Int = mealPrices[mealType] ?: 0
 
-        val price = numPeople * (distance + duration * hotelRating * 10 + transportPrice + mealPrice + 100/freeSpots)
+        val price = numPeople * (distance + duration * hotelRating * 10 + transportPrice + mealPrice + 100 / freeSpots)
 
         return price
     }
