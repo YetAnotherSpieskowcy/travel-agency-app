@@ -136,6 +136,7 @@ public class RoutingController(
         if (serviceName != "auth") {
             if (!(headers["cookie"]?.contains("user") ?: false)) {
                 var builder = ResponseEntity.status(300)
+                builder.header("Cache-Control", "no-cache")
                 builder.header("HX-Redirect", "/login.html")
                 builder.header("Cache-Control", "no-cache")
                 return builder.body("")
@@ -158,9 +159,17 @@ public class RoutingController(
         val exchangeName = "$serviceName.requests"
         val rawResponse =
             template.convertSendAndReceive(exchangeName, exchangeName, rawMsg as Any) as String
+        if (rawResponse == null) {
+            // the request timed out waiting for the response message in the queue
+            return ResponseEntity
+                .status(504)
+                .header("Cache-Control", "no-cache")
+                .body("")
+        }
         val resp = Json.decodeFromString<ResponseMessage>(rawResponse)
 
         var builder = ResponseEntity.status(resp.status)
+        builder.header("Cache-Control", "no-cache")
         resp.headers.forEach { key, value -> builder = builder.header(key, value) }
         return builder.body(resp.body)
     }
