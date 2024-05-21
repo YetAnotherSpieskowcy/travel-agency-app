@@ -9,6 +9,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_search_string(driver):
     wait = WebDriverWait(driver, 5)
+
+    wait.until(EC.presence_of_element_located((By.ID, "results")))
     results = lambda: driver.find_element(By.ID, "results")
     assert (  # Test if list is empty
         results().find_element(By.TAG_NAME, "p").text
@@ -22,11 +24,11 @@ def test_search_string(driver):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "/html/body/div/div/div[1]/div[1]/p[1]")
+            (By.XPATH, '//*[@id="results"]/div[1]/div[1]/p[1]')
         )
     )
     assert (  # Test if list contains at least one correct result
-        results().find_element(By.XPATH, "/html/body/div/div/div[1]/div[1]/p[1]").text
+        results().find_element(By.XPATH, "//div[1]/div[1]/p[1]").text
         == "Hotel Las Am\u00e9ricas Torre del Mar"
     )
     assert (  # Test if list contains at least one correct result
