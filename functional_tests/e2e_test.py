@@ -41,17 +41,21 @@ def test_e2e(driver):
     reservation_button = lambda: driver.find_element(By.ID, "start-reservation-btn")
     reservation_button().click()
 
-    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="purchase-form"]/button')))
+    wait.until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="purchase-form"]/button'))
+    )
 
-    buy_button = lambda: driver.find_element(By.XPATH, '//*[@id="purchase-form"]/button')
+    buy_button = lambda: driver.find_element(
+        By.XPATH, '//*[@id="purchase-form"]/button'
+    )
     buy_button().click()
 
     wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/p')))
 
     confirm_string = lambda: driver.find_element(By.XPATH, '//*[@id="container"]/p')
 
-    assert(
-        confirm_string().text in ["Gratulacje, kupiłeś wycieczkę!",
+    assert confirm_string().text in [
+        "Gratulacje, kupiłeś wycieczkę!",
         "Coś poszło nie tak, najprawdopodobniej skończyły się miejsca.",
-        "Coś poszło nie tak, płatność najpewniej została odrzucona przez operatora."]
-    )
+        "Coś poszło nie tak, płatność najpewniej została odrzucona przez operatora.",
+    ]
