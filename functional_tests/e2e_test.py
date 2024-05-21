@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_e2e(driver):
     wait = WebDriverWait(driver, 8)
@@ -35,29 +36,17 @@ def test_e2e(driver):
     details_button = lambda: driver.find_element(By.XPATH, "//div/div[2]/input")
     details_button().click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.ID, "start-reservation-btn")
-        )
-    )
+    wait.until(EC.presence_of_element_located((By.ID, "start-reservation-btn")))
 
     reservation_button = lambda: driver.find_element(By.ID, "start-reservation-btn")
     reservation_button().click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, '//*[@id="purchase-form"]/button')
-        )
-    )
+    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="purchase-form"]/button')))
 
     buy_button = lambda: driver.find_element(By.XPATH, '//*[@id="purchase-form"]/button')
     buy_button().click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, '//*[@id="container"]/p')
-        )
-    )
+    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="container"]/p')))
 
     confirm_string = lambda: driver.find_element(By.XPATH, '//*[@id="container"]/p')
 
