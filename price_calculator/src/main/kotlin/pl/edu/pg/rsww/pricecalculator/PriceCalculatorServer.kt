@@ -24,7 +24,8 @@ public class PriceCalculatorServer {
             if (freeSpots == 0) {
                 freeSpots = 1
             }
-            val transportType: String = request.params["transportType"] ?: "none"
+            var transportType: String = (request.params["route_id"] ?: "").split("_", limit = 2)[0].ifEmpty { "none" }
+            transportType = request.params["transportType"] ?: transportType
             val hotelRating: Int = request.params["hotelRating"]?.toInt() ?: 30
             val mealType: String = request.params["mealType"] ?: "Bez wy\u017cywienia"
 

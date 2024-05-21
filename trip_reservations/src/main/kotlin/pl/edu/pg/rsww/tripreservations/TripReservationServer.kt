@@ -38,15 +38,26 @@ public class TripReservationServer(
                 tripId = request.params["trip_id"] ?: "",
                 routeId = request.params["route_id"] ?: "",
             )
+            return
         }
         if (request.path == "/confirm_reservation") {
             if (controller.activeOrchestrators[request.params["sagaId"]] == null) {
-                sendHttpResponse(template, message, """{"success":false}""")
+                sendHttpResponse(
+                    template,
+                    message,
+                    """
+                    <p>Rezerwacja nie mogła zostać znaleziona lub wygasła.</p>
+                    <button type="button"
+                        class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
+                    """,
+                )
                 return
             }
 
             controller.activeOrchestrators[request.params["sagaId"]]?.continuationMessage = message
             controller.activeOrchestrators[request.params["sagaId"]]?.sendProcessPayment()
+            return
         }
         sendHttpResponse(template, message, """{"error":"404"}""")
     }

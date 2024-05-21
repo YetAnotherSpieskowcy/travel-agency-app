@@ -22,6 +22,7 @@ public class TripReservationOrchestrator(
     var state = State.WAITING_TO_START
     var canceled = false
     var completed = false
+    var startReservationResponseSent = false
     var onDone: (() -> Unit)? = null
 
     enum class State {
@@ -116,6 +117,11 @@ public class TripReservationOrchestrator(
             println("D2")
             return
         }
+        if (routeId == "") {
+            state = State.ACK_BOOK_TRANSPORT
+            sendUpdateBookingPreferences()
+            return
+        }
         template.convertAndSend(
             queueConfig.externalTransactionBookTransportExchange,
             queueConfig.externalTransactionBookTransportKey,
@@ -171,11 +177,12 @@ public class TripReservationOrchestrator(
             template,
             message,
             """{
-	  "success":${!canceled}
-	  "sagaId":$sagaId,
+	  "success":${!canceled},
+	  "sagaId":"$sagaId",
 	  "reserved_until": "$reservedUntil"
 	  }""",
         )
+        startReservationResponseSent = true
         return
     }
 
@@ -242,7 +249,40 @@ public class TripReservationOrchestrator(
     fun done() {
         println("L")
         state = State.DONE
-        sendHttpResponse(template, continuationMessage ?: message, """{"success":${!canceled}}""")
+        if (canceled && startReservationResponseSent) {
+            sendHttpResponse(
+                template,
+                continuationMessage ?: message,
+                """
+                <p>Coś poszło nie tak, płatność najpewniej została odrzucona przez operatora.</p>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
+                """,
+            )
+        } else if (canceled) {
+            sendHttpResponse(
+                template,
+                continuationMessage ?: message,
+                """
+                <p>Coś poszło nie tak, najprawdopodobniej skończyły się miejsca.</p>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
+                """,
+            )
+        } else {
+            sendHttpResponse(
+                template,
+                continuationMessage ?: message,
+                """
+                <p>Gratulacje, kupiłeś wycieczkę!</p>
+                <button type="button"
+                    class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
+                """,
+            )
+        }
         onDone?.invoke()
     }
 
@@ -263,6 +303,9 @@ public class TripReservationOrchestrator(
 
     fun revertBookTransport() {
         if (state <= State.SENT_BOOK_TRANSPORT) {
+            return
+        }
+        if (routeId == "") {
             return
         }
         template.convertAndSend(

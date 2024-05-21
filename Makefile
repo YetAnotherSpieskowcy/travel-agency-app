@@ -13,10 +13,28 @@ dev-run: build-dev
 	fg
 
 # [ran on a dev machine]
+# Builds, runs the whole dev stack, and watches it for changes, making sure to fill the DB
+.PHONY: dev-run
+watch-dev-run: build-dev
+	# doing a weird set -m / fg dance to allow to
+	# still stop the whole stack easily during dev by Ctrl+C
+	set -m ; \
+	$(MAKE) watch-dev-up-no-build & \
+	$(MAKE) dev-fill-db \
+		|| { exit_code=$$?; kill \%1; fg; exit "$$exit_code"; } ; \
+	fg
+
+# [ran on a dev machine]
 # Runs the whole dev stack (w/o building images or filling the DB)
 .PHONY: dev-up-no-build
 dev-up-no-build:
 	docker compose -f compose.yaml -f compose.dev.yaml up
+
+# [ran on a dev machine]
+# Runs the whole dev stack and watches it for changes (w/o building images or filling the DB)
+.PHONY: dev-up-no-build
+watch-dev-up-no-build:
+	docker compose -f compose.yaml -f compose.dev.yaml up --watch
 
 # [ran on a dev machine]
 # Builds the whole stack and then runs it in the background (daemonized)
@@ -40,7 +58,7 @@ dev-fill-db:
 build:
 	docker compose build
 	# build db_scripts image
-	docker build -t $(DB_SCRIPTS_IMAGE_NAME) db_scripts/
+	$(MAKE) build-db-scripts
 
 # [ran on a dev machine]
 # Builds images for the development stack
@@ -48,6 +66,12 @@ build:
 build-dev:
 	docker compose -f compose.yaml -f compose.dev.yaml build
 	# build db_scripts image
+	$(MAKE) build-db-scripts
+
+# [ran on a dev machine]
+# Builds db_scripts image
+.PHONY: build-dev
+build-db-scripts:
 	docker build -t $(DB_SCRIPTS_IMAGE_NAME) db_scripts/
 
 # [ran on a dev machine]

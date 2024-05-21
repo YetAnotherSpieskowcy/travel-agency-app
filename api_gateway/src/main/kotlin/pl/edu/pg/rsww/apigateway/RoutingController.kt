@@ -22,43 +22,7 @@ public class RoutingController(
     fun index(): String {
         // have one internal (outside /api/*) endpoint that indicates
         // that the API gateway itself is fine
-        return "Hello, I'm alive!"
-    }
-
-    @RequestMapping("/api/mocked/{*path}")
-    fun mock(
-        @PathVariable path: String,
-        @RequestParam params: Map<String, String>,
-        @RequestHeader headers: Map<String, String>,
-    ): ResponseEntity<String> {
-        if (!(headers["cookie"]?.contains("user") ?: false)) {
-            var builder = ResponseEntity.status(300)
-            builder.header("HX-Redirect", "/login.html")
-            return builder.body("")
-        }
-        val builder = ResponseEntity.status(200)
-        if (path.contains("get_trips")) {
-            val n: Int = params["n"]?.toInt() ?: 0
-            val next = n + 1
-
-            return builder.body(
-                """{
-	  "name": "${params["search"]}",
-	  "n": $next,
-	  "id": $n,
-	  "description": "Hello, world!"
-      }""",
-            )
-        }
-        if (path.contains("trip")) {
-            return builder.body(
-                """{
-	  "name": "Trip no. ${params["id"]}",
-	  "description": "A slightly longer description for trip number ${params["id"]}"
-      }""",
-            )
-        }
-        return builder.body("""{ "error": "404" }""")
+        return "Cześć, ja żyję!"
     }
 
     @RequestMapping("/api/{serviceName}/{*path}")
@@ -74,6 +38,7 @@ public class RoutingController(
                 var builder = ResponseEntity.status(300)
                 builder.header("Cache-Control", "no-cache")
                 builder.header("HX-Redirect", "/login.html")
+                builder.header("Cache-Control", "no-cache")
                 return builder.body("")
             }
         }
@@ -93,7 +58,7 @@ public class RoutingController(
 
         val exchangeName = "$serviceName.requests"
         val rawResponse =
-            template.convertSendAndReceive(exchangeName, exchangeName, rawMsg as Any) as String
+            template.convertSendAndReceive(exchangeName, exchangeName, rawMsg as Any) as String?
         if (rawResponse == null) {
             // the request timed out waiting for the response message in the queue
             return ResponseEntity
