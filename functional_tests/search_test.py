@@ -169,7 +169,7 @@ def test_details_view(driver):
     cancel = lambda: driver.find_element(By.XPATH, "/html/body/div/div/div[1]/button")
     assert cancel().text == "CANCEL"
     cancel().click()
-    results = lambda: driver.find_element(By.ID, "results")
+    results = lambda: driver.find_element(By.ID, "destination")
     assert (  # Test if list is empty
         results().find_element(By.TAG_NAME, "p").text
         == "Start typing to see the results..."
