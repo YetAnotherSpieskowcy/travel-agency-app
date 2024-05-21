@@ -138,12 +138,13 @@ public class TripReservationController(
         tripId: String,
         routeId: String,
     ) {
+        val actualRouteId = routeId.split("_", limit = 2).getOrNull(1) ?: ""
         val orchestrator =
             TripReservationOrchestrator(
                 message = message,
                 userId = userId,
                 tripId = tripId,
-                routeId = routeId,
+                routeId = actualRouteId,
                 template = template,
                 queueConfig = queueConfig,
             )

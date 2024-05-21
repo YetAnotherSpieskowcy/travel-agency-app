@@ -117,6 +117,11 @@ public class TripReservationOrchestrator(
             println("D2")
             return
         }
+        if (routeId == "") {
+            state = State.ACK_BOOK_TRANSPORT
+            sendUpdateBookingPreferences()
+            return
+        }
         template.convertAndSend(
             queueConfig.externalTransactionBookTransportExchange,
             queueConfig.externalTransactionBookTransportKey,
@@ -298,6 +303,9 @@ public class TripReservationOrchestrator(
 
     fun revertBookTransport() {
         if (state <= State.SENT_BOOK_TRANSPORT) {
+            return
+        }
+        if (routeId == "") {
             return
         }
         template.convertAndSend(
