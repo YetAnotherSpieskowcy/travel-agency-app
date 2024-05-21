@@ -1,18 +1,32 @@
 <form hx-get="/api/tour_offers/get_trips" hx-target="#results" hx-swap="innerHTML">
+    <label for="destination">Dokąd:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
             id="destination" name="destination" class="form-control" type="search" />
+
+    <label for="from">Skąd:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
             id="from" name="from" class="form-control" type="search"  />
+
+    <label for="dep_date">Od kiedy:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
            id="dep_date" name="dep_date" class="form-control" type="date" />
+
+    <label for="num_adults">Ile dorosłych:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
            id="num_adults" name="num_adults" class="form-control" type="number" min="1"  value="1"/>
+
+    <label for="num_under_3">Ile dzieci do 3 lat:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
            id="num_under_3" name="num_under_3" class="form-control" type="number" min="0"  value="0"/>
+
+    <label for="num_under_10">Ile dzieci do 10 lat:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
            id="num_under_10" name="num_under_10" class="form-control" type="number" min="0"  value="0"/>
+
+    <label for="num_under_18">Ile młodzieży do 18 lat:</label>
     <input class="w-full rounded-md my-2 bg-transparent px-4 py-1 text-gray-400 focus:outline-none outline-1 border-2"
            id="num_under_18" name="num_under_18" class="form-control" type="number" min="0"  value="0"/>
+
     <input type="submit" value="Szukaj" name="Krzys"
            class="select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle
            font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring
