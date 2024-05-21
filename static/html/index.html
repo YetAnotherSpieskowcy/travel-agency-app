@@ -52,25 +52,26 @@
 			class="my-3 rounded-md outline-1 box-border border-2 shadow-md flex justify-between gap-x-6 py-5 flex min-w-0 gap-x-4 space-x-4 px-5">
 			<div>
 				<p class="break-afer-auto text-base font-semibold leading-7 text-gray-900">
-					{{tour.title}} {{stars tour.hotel_rating}}</p>
-				<p class="mt-1 text-xs leading-6 text-gray-500">{{{tour.description}}}</p>
+					{{title}} {{stars hotel_rating}}</p>
+				<p class="mt-1 text-xs leading-6 text-gray-500">{{{description}}}</p>
 				<dl class="divide-y divide-gray-100 py-2">
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt class="text-sm font-medium leading-6 text-gray-900">Rooms left</dt>
-						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
-							hx-get="/api/mocked/trip_rooms_left?id={{id}}"
+						<dd id="available-room-count"
+							class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+							hx-get="/api/tour_offers/trip_available_rooms?id={{id}}&numPeople={{numPeople}}"
 							hx-swap="innerHTML"
 							hx-trigger="every 5s"
 							hx-indicator="#indicator-ignore"
-						>{{tour.hotel_rooms_left}}</dd>
+						>{{availableRooms}}</dd>
 					</div>
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt class="text-sm font-medium leading-6 text-gray-900">Start date</dt>
-						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{tour.start_date}}</dd>
+						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{start_date}}</dd>
 					</div>
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt class="text-sm font-medium leading-6 text-gray-900">End date</dt>
-						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{tour.end_date}}</dd>
+						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{end_date}}</dd>
 					</div>
 				</dl>
 				<button type="button"
@@ -89,38 +90,33 @@
 					hx-trigger="load, every 5s, change"
 					hx-target="#trip-price"
 					hx-indicator="#indicator-ignore"
+					hx-include="#trip-reservation-form"
 					handlebars-template="trip-price-template"
 				>
 					<input type="hidden" name="trip_id" value="{{id}}" />
-					<input type="hidden" name="destLatitude" value="{{tour.geolocation.lat}}" />
-					<input type="hidden" name="destLongitude" value="{{tour.geolocation.lng}}" />
-					<input type="hidden" name="duration" value="{{tour.duration}}" />
+					<input type="hidden" name="destLatitude" value="{{geolocation.lat}}" />
+					<input type="hidden" name="destLongitude" value="{{geolocation.lng}}" />
+					<input type="hidden" name="duration" value="{{duration}}" />
 					<input type="hidden" name="numPeople" value="{{numPeople}}" />
-					<input type="hidden" name="hotelRating" value="{{tour.hotel_rating}}" />
+					<input type="hidden" name="hotelRating" value="{{hotel_rating}}" />
 					<label class="block py-3">
 						<span class="block text-sm font-medium text-slate-700">Transport</span>
-						<select name="route_id">
-							<option value="own">Own transport</option>
-							{{#each tour.hotel_bus_routes}}
-							<option
-								value="{{this.id}}"
-							>
-								Bus from {{this.origin.city}}
-							</option>
-							{{/each}}
-							{{#each tour.hotel_flight_routes}}
-							<option
-								value="{{this.id}}"
-							>
-								Flight from {{this.origin.city}}
-							</option>
-							{{/each}}
+						<select
+							name="route_id"
+							hx-get="/api/tour_offers/transport_options?id={{id}}&numPeople={{numPeople}}"
+							hx-trigger="load, every 5s"
+							hx-target="this"
+							hx-swap="innerHTML"
+							hx-indicator="#indicator-ignore"
+							handlebars-template="unset"
+						>
+							<option value='own'>Own transport</option>
 						</select>
 					</label>
 					<label class="block py-3">
 						<span class="block text-sm font-medium text-slate-700">Room type</span>
 						<select name="room">
-							{{#each tour.hotel_rooms}}
+							{{#each hotel_rooms}}
 							<option value="{{this.title}}">{{this.title}}</option>
 							{{/each}}
 						</select>
@@ -128,13 +124,14 @@
 					<label class="block py-3">
 						<span class="block text-sm font-medium text-slate-700">Meal package</span>
 						<select name="mealType">
-							{{#each tour.hotel_meal_titles}}
+							{{#each hotel_meal_titles}}
 							<option value="{{this}}">{{this}}</option>
 							{{/each}}
 						</select>
 					</label>
 					<button
 						type="button"
+						id="start-reservation-btn"
 						class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 						hx-get="/api/trip_reservations/start_reservation"
 						hx-include="#trip-reservation-form"
@@ -147,6 +144,24 @@
 				</form>
 			</div>
 		</div>
+		<script type="text/javascript">
+			(() => {
+				let roomCountElement = document.getElementById("available-room-count")
+				let startReservationBtn = document.getElementById("start-reservation-btn")
+				let updateBtn = () => {
+					startReservationBtn.disabled = roomCountElement.innerHTML == "0"
+				}
+				updateBtn()
+
+				let observer = new MutationObserver(
+					(mutationsList, observer) => updateBtn()
+				)
+				observer.observe(
+					roomCountElement,
+					{characterData: false, childList: true, attributes: false},
+				)
+			})()
+		</script>
 	</template>
 	<template id="active-reservation">
 		<div id="reservation-status" class="py-4">
@@ -172,24 +187,26 @@
 			class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 			hx-get="/search.html" hx-target="#container">Cancel</button>
 		<script type="text/javascript">
-			let reservedUntil = Date.parse("{{{reserved_until}}}");
-			let interval = setInterval(() => {
-				let now = new Date().getTime()
-				let duration = reservedUntil - now
-				let seconds = Math.floor(duration / 1000)
-				if (seconds < 0) {
-					clearInterval(interval)
-					let el = document.getElementById("purchase-form")
-					el.remove()
-					el = document.getElementById("cancel-button")
-					el.innerHTML = "Go back to tour search"
-					el = document.getElementById("reservation-status")
-					el.innerHTML = "Reservation expired"
-					return
-				}
-				let el = document.getElementById("reservation-time-left")
-				el.innerHTML = `${seconds} seconds`
-			}, 1000)
+			(() => {
+				let reservedUntil = Date.parse("{{{reserved_until}}}");
+				let interval = setInterval(() => {
+					let now = new Date().getTime()
+					let duration = reservedUntil - now
+					let seconds = Math.floor(duration / 1000)
+					if (seconds < 0) {
+						clearInterval(interval)
+						let el = document.getElementById("purchase-form")
+						el.remove()
+						el = document.getElementById("cancel-button")
+						el.innerHTML = "Go back to tour search"
+						el = document.getElementById("reservation-status")
+						el.innerHTML = "Reservation expired"
+						return
+					}
+					let el = document.getElementById("reservation-time-left")
+					el.innerHTML = `${seconds} seconds`
+				}, 1000)
+			})()
 		</script>
 	</template>
 	<template id="trip-price-template">
