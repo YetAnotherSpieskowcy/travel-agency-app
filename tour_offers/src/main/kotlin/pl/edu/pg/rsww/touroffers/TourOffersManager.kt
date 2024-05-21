@@ -76,7 +76,7 @@ public class TourOffersManager {
                         ) &&
                         (if (departureDate != "") it.data?.getString("start_date") == departureDate ?: false else true) &&
                         available.any { a -> a.entity_id == it.data?.getString("hotel") }
-                }
+                }.take(30)
 
         if (destCities != null) {
             var n = 0
