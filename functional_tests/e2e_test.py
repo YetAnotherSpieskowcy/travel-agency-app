@@ -63,7 +63,7 @@ def test_e2e(driver):
 
 
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
-def test_e2e(driver):
+def test_not_buy(driver):
     wait = WebDriverWait(driver, 8)
 
     wait.until(EC.presence_of_element_located((By.ID, "results")))
@@ -102,9 +102,7 @@ def test_e2e(driver):
         EC.presence_of_element_located((By.XPATH, '//*[@id="purchase-form"]/button'))
     )
 
-    return_button = lambda: driver.find_element(
-        By.XPATH, '//*[@id="cancel-button"]'
-    )
+    return_button = lambda: driver.find_element(By.XPATH, '//*[@id="cancel-button"]')
     return_button().click()
 
     wait.until(EC.presence_of_element_located((By.ID, "results")))

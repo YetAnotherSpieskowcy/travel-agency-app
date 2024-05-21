@@ -25,8 +25,11 @@ public class PriceCalculatorServer {
                 if (freeSpots == 0) {
                     freeSpots = 1
                 }
-                var transportType: String = (request.params["route_id"]
-                        ?: "").split("_", limit = 2)[0].ifEmpty { "none" }
+                var transportType: String =
+                    (
+                        request.params["route_id"]
+                            ?: ""
+                    ).split("_", limit = 2)[0].ifEmpty { "none" }
                 transportType = request.params["transportType"] ?: transportType
                 val hotelRating: Int = request.params["hotelRating"]?.toInt() ?: 30
                 val mealType: String = request.params["mealType"] ?: "Bez wy\u017cywienia"
@@ -35,36 +38,36 @@ public class PriceCalculatorServer {
                 val fromGeolocation: Geolocation = Geolocation(fromLat, fromLong)
 
                 val price =
-                        calculator.calculatePrice(
-                                destGeolocation,
-                                fromGeolocation,
-                                duration,
-                                numPeople,
-                                freeSpots,
-                                transportType,
-                                hotelRating / 10.0f,
-                                mealType,
-                        )
+                    calculator.calculatePrice(
+                        destGeolocation,
+                        fromGeolocation,
+                        duration,
+                        numPeople,
+                        freeSpots,
+                        transportType,
+                        hotelRating / 10.0f,
+                        mealType,
+                    )
 
                 val resp =
-                        ResponseMessage(
-                                200,
-                                emptyMap(),
-                                """{
+                    ResponseMessage(
+                        200,
+                        emptyMap(),
+                        """{
 	            "price": $price
                 }""",
-                        )
+                    )
                 val rawResp = Json.encodeToString(resp)
                 return rawResp
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 val resp =
-                        ResponseMessage(
-                                200,
-                                emptyMap(),
-                                """{
+                    ResponseMessage(
+                        200,
+                        emptyMap(),
+                        """{
 	            "price": 3721
                 }""",
-                        )
+                    )
                 return Json.encodeToString(resp)
             }
         }
