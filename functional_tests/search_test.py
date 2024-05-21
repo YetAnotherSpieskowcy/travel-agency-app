@@ -74,3 +74,41 @@ def test_details_view(driver):
         results().find_element(By.TAG_NAME, "p").text
         == "Start typing to see the results..."
     )
+
+
+@pytest.mark.flaky(retries=2, only_on=[TimeoutException])
+def test_purchase(driver):
+    wait = WebDriverWait(driver, 5)
+    results = lambda: driver.find_element(By.ID, "results")
+
+    search_bar = lambda: driver.find_element(By.NAME, "destination")
+    search_bar().send_keys("Korfu")
+
+    search_button = lambda: driver.find_element(By.NAME, "Krzys")
+    search_button().click()
+
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div/div[2]/div/div[1]/div[2]/input")
+        )
+    )
+    details_button = lambda: driver.find_element(
+        By.XPATH, '/html/body/div/div[2]/div/div[1]/div[2]/input[@type="button"]'
+    )
+    details_button().click()
+
+    wait.until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="start-reservation-btn"]'))
+    )
+    start_reservation_button = lambda: driver.find_element(
+        By.XPATH, '//*[@id="start-reservation-btn"]'
+    )
+    start_reservation_button().click()
+
+    wait.until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="purchase-form"]/button'))
+    )
+    purchase_button = lambda: driver.find_element(
+        By.XPATH, '//*[@id="purchase-form"]/button'
+    )
+    purchase_button().click()
