@@ -204,6 +204,12 @@
 					let el = document.getElementById("reservation-time-left")
 					el.innerHTML = `${seconds} sekund`
 				}, 1000)
+				document.getElementById("cancel-button").addEventListener("click", (e) => {
+					clearInterval(interval)
+				})
+				document.getElementById("purchase-form").addEventListener("submit", (e) => {
+					clearInterval(interval)
+				})
 			})()
 		</script>
 	</template>
