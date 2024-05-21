@@ -98,7 +98,7 @@ public class TourOffersManager {
                                         text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all 
                                         hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none 
                                         disabled:opacity-50 disabled:shadow-none"
-                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&num_people=${numPeople}" hx-target="#container" handlebars-template="trip_details"
+                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&numPeople=${numPeople}" hx-target="#container" handlebars-template="trip_details"
                                         hx-swap="innerHTML" value="Szczegóły">
                                 </div>
                             </div>
@@ -121,17 +121,32 @@ public class TourOffersManager {
     fun getTourDetails(
         id: String,
         numPeople: Int,
+    ): String? {
+        val data = getTourData(id, numPeople)
+
+        val result = data?.toJson()
+        return result
+    }
+
+    fun getTourAvailableRooms(
+        id: String,
+        numPeople: Int,
     ): String {
+        val data = getTourData(id, numPeople)
+
+        val result = data?.getInteger("availableRooms", 0)
+
+        return "$result"
+    }
+
+    private fun getTourData(
+        id: String,
+        numPeople: Int,
+    ): Document? {
         val client = MongoClient.create(connectionString = connectionString)
         val db = client.getDatabase(databaseName = dbName)
 
-        var result =
-            """
-            {
-            "name": "Coś poszło nie tak...",
-            "description": "Brak danych"
-            }
-            """.trimIndent()
+        var result: Document? = null
 
         val tour =
             db.getCollection<Entity>(
@@ -144,15 +159,118 @@ public class TourOffersManager {
                 db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_id.name, tour.data.getString("hotel")))
                     .toList()
                     .firstOrNull()
+            val id = id
             val limit = hotel?.data?.getDouble("reservation_limit") ?: 0.0
             val count = hotel?.data?.getDouble("reservation_count") ?: limit
-            val availableRooms = limit - count
+            val availableRooms = (limit - count).toInt()
             result =
                 tour.data.append("numPeople", numPeople)
                     .append("availableRooms", availableRooms)
-                    .toJson()
+                    .append("id", id)
         }
         client.close()
         return result
+    }
+
+    fun getTransportOptions(id: String, numPeople: Int, default: String): String {
+        val client = MongoClient.create(connectionString = connectionString)
+        val db = client.getDatabase(databaseName = dbName)
+
+        val tour =
+            db.getCollection<Entity>(
+                "snapshots",
+            ).find(Filters.and(Filters.eq(Entity::entity_type.name, "Tour"), Filters.eq(Entity::entity_id.name, id)))
+                .toList()
+                .firstOrNull()
+
+        if (tour == null) {
+            client.close()
+            return generateOptions(listOf(), default)
+        }
+
+        val busRouteIds = tour.data.getList(
+            "hotel_bus_routes", Document::class.javaObjectType
+        ).map { it.getString("id") }
+        val flightRouteIds = tour.data.getList(
+            "hotel_flight_routes", Document::class.javaObjectType
+        ).map { it.getString("id") }
+
+        val routes =
+            db.getCollection<Entity>(
+                "snapshots",
+            ).find(
+                Filters.or(
+                    Filters.and(
+                        Filters.eq(Entity::entity_type.name, "BusRoute"),
+                        Filters.`in`(Entity::entity_id.name, busRouteIds),
+                    ),
+                    Filters.and(
+                        Filters.eq(Entity::entity_type.name, "FlightRoute"),
+                        Filters.`in`(Entity::entity_id.name, flightRouteIds),
+                    ),
+                )
+            ).toList().filter {
+                val limit = it?.data?.getDouble("reservation_limit") ?: 0.0
+                val count = it?.data?.getDouble("reservation_count") ?: limit
+                val availableSpots = limit - count
+                availableSpots >= numPeople
+            }
+
+        val result = generateOptions(routes, default)
+
+        client.close()
+        return result
+    }
+
+    private fun generateOptions(routes: List<Entity>, default: String): String {
+        return buildString {
+            val optionValue = "own"
+            append("<option")
+            append(" value='$optionValue'")
+            if (default == optionValue) {
+                append(" selected='selected'")
+            }
+            append(">")
+            append("Own transport")
+            append("</option>")
+            for (route in routes) {
+                val rawType = when (route.entity_type) {
+                    "BusRoute" -> "bus"
+                    "FlightRoute" -> "flight"
+                    else -> throw IllegalStateException(
+                        "routes query only includes above 2 types"
+                    )
+                }
+                val displayType = when (route.entity_type) {
+                    "BusRoute" -> "Bus"
+                    "FlightRoute" -> "Flight"
+                    else -> throw IllegalStateException(
+                        "routes query only includes above 2 types"
+                    )
+                }
+                val city = if (route.entity_type == "BusRoute") {
+                    route.data.getString("origin_bus_stop_city")
+                } else {
+                    route.data.getString("origin_airport_city")
+                }
+                val limit = route?.data?.getDouble("reservation_limit") ?: 0.0
+                val count = route?.data?.getDouble("reservation_count") ?: limit
+                val freeSeats = limit - count
+                val optionValue = "${rawType}_${route.entity_id}"
+                append("<option")
+                append(" value='$optionValue'")
+                if (default == optionValue) {
+                    append(" selected='selected'")
+                }
+                append(">")
+                append(displayType)
+                append(" from ")
+                append(city)
+                append("(")
+                append("$freeSeats")
+                append(" free seats)")
+                append("</option>")
+            }
+        }
     }
 }
