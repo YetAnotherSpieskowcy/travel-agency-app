@@ -61,7 +61,8 @@ def test_search_acceptable_destination(driver, destination):
         )
     )
     assert (  # Test if list contains at least one correct result
-        acceptable_destinations[destination] in results().find_element(By.XPATH, "//div/div/p[2]").text
+        acceptable_destinations[destination]
+        in results().find_element(By.XPATH, "//div/div/p[2]").text
     )
 
 
@@ -80,11 +81,7 @@ def test_search_wrong_destination(driver, destination):
     search_button = lambda: driver.find_element(By.NAME, "Krzys")
     search_button().click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.NAME, "noResults")
-        )
-    )
+    wait.until(EC.presence_of_element_located((By.NAME, "noResults")))
     assert (  # Test if list contains at least one correct result
         results().find_element(By.XPATH, "//div/div/p").text == "Brak wyników"
     )
@@ -96,7 +93,7 @@ wrong_from = ["ziemniaki", "1234", "`drxtcfygvjhbk`", "!@#$%"]
 
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 @pytest.mark.parametrize("f", range(len(acceptable_from)))
-def test_search_acceptable_destination(driver, f):
+def test_search_acceptable_from(driver, f):
     wait = WebDriverWait(driver, 5)
     results = lambda: driver.find_element(By.ID, "results")
     assert (  # Test if list is empty
@@ -121,7 +118,7 @@ def test_search_acceptable_destination(driver, f):
 
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 @pytest.mark.parametrize("f", range(len(wrong_from)))
-def test_search_wrong_destination(driver, f):
+def test_search_wrong_from(driver, f):
     wait = WebDriverWait(driver, 5)
     results = lambda: driver.find_element(By.ID, "results")
     assert (  # Test if list is empty
@@ -134,11 +131,7 @@ def test_search_wrong_destination(driver, f):
     search_button = lambda: driver.find_element(By.NAME, "Krzys")
     search_button().click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.NAME, "noResults")
-        )
-    )
+    wait.until(EC.presence_of_element_located((By.NAME, "noResults")))
     assert (  # Test if list contains at least one correct result
         results().find_element(By.XPATH, "//div/div/p").text == "Brak wyników"
     )
