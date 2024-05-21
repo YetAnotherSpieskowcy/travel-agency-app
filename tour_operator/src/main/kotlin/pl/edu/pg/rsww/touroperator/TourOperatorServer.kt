@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.concurrent.TimeUnit
 
 public class TourOperatorServer {
     @Autowired
@@ -24,6 +25,7 @@ public class TourOperatorServer {
         println(message.messageProperties.receivedRoutingKey)
         when (message.messageProperties.receivedRoutingKey) {
             queueConfig.transactionProcessPayment -> {
+                TimeUnit.SECONDS.sleep(3L)
                 val payload = Json.decodeFromString<ProcessPaymentMessage>(request)
                 template.convertAndSend(
                     queueConfig.events,
