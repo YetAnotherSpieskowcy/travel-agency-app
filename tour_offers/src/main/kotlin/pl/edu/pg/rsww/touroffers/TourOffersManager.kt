@@ -84,15 +84,15 @@ public class TourOffersManager {
                 val cityName = d.data.getString("hotel_destination_city_title")
                 val countryName = d.data?.getString("hotel_destination_country_title")
                 var des: String = ""
-                if (cityName != null && cityName != ""){
-                        des += cityName
-                        if (countryName != null && countryName != ""){
-                                des += ", "
-                            }
+                if (cityName != null && cityName != "") {
+                    des += cityName
+                    if (countryName != null && countryName != "") {
+                        des += ", "
                     }
-                if (countryName != null && countryName != ""){
-                        des += countryName
-                    }
+                }
+                if (countryName != null && countryName != "") {
+                    des += countryName
+                }
                 result +=
                     """
                     <div class="my-3 rounded-md outline-1 box-border border-2 shadow-md flex justify-between gap-x-6 py-5 flex min-w-0 gap-x-4 space-x-4 px-5">
