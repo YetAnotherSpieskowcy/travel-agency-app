@@ -269,7 +269,7 @@ public class TourOffersManager {
                     }
                 val limit = route?.data?.getDouble("reservation_limit") ?: 0.0
                 val count = route?.data?.getDouble("reservation_count") ?: limit
-                val freeSeats = limit - count
+                val freeSeats = (limit - count).toInt()
                 val optionValue = "${rawType}_${route.entity_id}"
                 append("<option")
                 append(" value='$optionValue'")
@@ -280,7 +280,7 @@ public class TourOffersManager {
                 append(displayType)
                 append(" from ")
                 append(city)
-                append("(")
+                append(" (")
                 append("$freeSeats")
                 append(" free seats)")
                 append("</option>")
