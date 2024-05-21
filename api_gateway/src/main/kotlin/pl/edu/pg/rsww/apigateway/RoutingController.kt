@@ -22,7 +22,7 @@ public class RoutingController(
     fun index(): String {
         // have one internal (outside /api/*) endpoint that indicates
         // that the API gateway itself is fine
-        return "Hello, I'm alive!"
+        return "Cześć, ja żyję!"
     }
 
     @RequestMapping("/api/{serviceName}/{*path}")

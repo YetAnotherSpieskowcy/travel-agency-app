@@ -32,7 +32,7 @@
 	<div class="relative" hx-indicator="#processing-overlay">
 		<div id="processing-overlay" class="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center htmx-indicator">
 			<div class="flex items-center">
-				<span class="text-3xl mr-4">Processing...</span>
+				<span class="text-3xl mr-4">Przetwarzanie...</span>
 				<svg class="animate-spin h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none"
 		        viewBox="0 0 24 24">
 					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -56,7 +56,7 @@
 				<p class="mt-1 text-xs leading-6 text-gray-500">{{{description}}}</p>
 				<dl class="divide-y divide-gray-100 py-2">
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt class="text-sm font-medium leading-6 text-gray-900">Rooms left</dt>
+						<dt class="text-sm font-medium leading-6 text-gray-900">Pozostała liczba pokoi</dt>
 						<dd id="available-room-count"
 							class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
 							hx-get="/api/tour_offers/trip_available_rooms?id={{id}}&numPeople={{numPeople}}"
@@ -66,23 +66,23 @@
 						>{{availableRooms}}</dd>
 					</div>
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt class="text-sm font-medium leading-6 text-gray-900">Start date</dt>
+						<dt class="text-sm font-medium leading-6 text-gray-900">Data wyjazdu</dt>
 						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{start_date}}</dd>
 					</div>
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-						<dt class="text-sm font-medium leading-6 text-gray-900">End date</dt>
+						<dt class="text-sm font-medium leading-6 text-gray-900">Data powrotu</dt>
 						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{end_date}}</dd>
 					</div>
 				</dl>
 				<button type="button"
 					class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-					hx-get="/search.html" hx-target="#container">Cancel</button>
+					hx-get="/search.html" hx-target="#container">Anuluj</button>
 			</div>
 			<div>
 			</div>
 			<div id="sidebar">
 				<div class="py-4">
-					<span id="trip-price">Price unknown, trying to load...</span>
+					<span id="trip-price">Cena nieznana, ładowanie...</span>
 				</div>
 				<form
 					id="trip-reservation-form"
@@ -110,11 +110,11 @@
 							hx-indicator="#indicator-ignore"
 							handlebars-template="unset"
 						>
-							<option value='own'>Own transport</option>
+							<option value='own'>Transport we własnym zakresie</option>
 						</select>
 					</label>
 					<label class="block py-3">
-						<span class="block text-sm font-medium text-slate-700">Room type</span>
+						<span class="block text-sm font-medium text-slate-700">Typ pokoju</span>
 						<select name="room">
 							{{#each hotel_rooms}}
 							<option value="{{this.title}}">{{this.title}}</option>
@@ -122,7 +122,7 @@
 						</select>
 					</label>
 					<label class="block py-3">
-						<span class="block text-sm font-medium text-slate-700">Meal package</span>
+						<span class="block text-sm font-medium text-slate-700">Wyżywienie</span>
 						<select name="mealType">
 							{{#each hotel_meal_titles}}
 							<option value="{{this}}">{{this}}</option>
@@ -139,7 +139,7 @@
 						hx-indicator="#processing-overlay"
 						handlebars-template="active-reservation"
 					>
-						Start reservation
+						Rozpocznij rezerwację
 					</button>
 				</form>
 			</div>
@@ -165,8 +165,8 @@
 	</template>
 	<template id="active-reservation">
 		<div id="reservation-status" class="py-4">
-			Reservation active, time left to buy:
-			<span id="reservation-time-left">60 seconds</span>
+			Rezerwacja aktywna, czas pozostały na zakup:
+			<span id="reservation-time-left">60 sekund</span>
 		</div>
 		<form
 			id="purchase-form"
@@ -179,13 +179,13 @@
 				type="submit"
 				class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 			>
-				Purchase the offer
+				Zakup ofertę
 			</button>
 		</form>
 		<button id="cancel-button"
 			type="button"
 			class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-			hx-get="/search.html" hx-target="#container">Go back to tour search</button>
+			hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
 		<script type="text/javascript">
 			(() => {
 				let reservedUntil = Date.parse("{{{reserved_until}}}");
@@ -197,14 +197,12 @@
 						clearInterval(interval)
 						let el = document.getElementById("purchase-form")
 						el.remove()
-						el = document.getElementById("cancel-button")
-						el.innerHTML = "Go back to tour search"
 						el = document.getElementById("reservation-status")
-						el.innerHTML = "Reservation expired"
+						el.innerHTML = "Rezerwacja wygasła"
 						return
 					}
 					let el = document.getElementById("reservation-time-left")
-					el.innerHTML = `${seconds} seconds`
+					el.innerHTML = `${seconds} sekund`
 				}, 1000)
 			})()
 		</script>

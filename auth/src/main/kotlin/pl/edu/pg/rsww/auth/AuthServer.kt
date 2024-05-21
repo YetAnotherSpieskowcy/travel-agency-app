@@ -39,7 +39,7 @@ public class AuthServer {
                         ResponseMessage(
                             200,
                             emptyMap(),
-                            "Username not found",
+                            "Podana nazwa użytkownika nie istnieje",
                         )
                     }
             val rawResp = Json.encodeToString(resp)

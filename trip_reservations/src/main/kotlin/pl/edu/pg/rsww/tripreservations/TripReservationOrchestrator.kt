@@ -254,10 +254,10 @@ public class TripReservationOrchestrator(
                 template,
                 continuationMessage ?: message,
                 """
-                <p>Something went wrong, possibly payment was rejected.</p>
+                <p>Coś poszło nie tak, płatność najpewniej została odrzucona przez operatora.</p>
                 <button type="button"
                     class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    hx-get="/search.html" hx-target="#container">Go back to tour list</button>
+                    hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
                 """,
             )
         } else if (canceled) {
@@ -265,10 +265,10 @@ public class TripReservationOrchestrator(
                 template,
                 continuationMessage ?: message,
                 """
-                <p>Something went wrong, possibly reservation count was exceeded.</p>
+                <p>Coś poszło nie tak, najprawdopodobniej skończyły się miejsca.</p>
                 <button type="button"
                     class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    hx-get="/search.html" hx-target="#container">Go back to tour list</button>
+                    hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
                 """,
             )
         } else {
@@ -276,10 +276,10 @@ public class TripReservationOrchestrator(
                 template,
                 continuationMessage ?: message,
                 """
-                <p>Congratulations, you bought it!</p>
+                <p>Gratulacje, kupiłeś wycieczkę!</p>
                 <button type="button"
                     class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    hx-get="/search.html" hx-target="#container">Go back to tour list</button>
+                    hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
                 """,
             )
         }

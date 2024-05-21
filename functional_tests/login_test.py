@@ -33,9 +33,11 @@ def test_invalid_login(sessionless_driver, user):
     assert driver.get_cookie("user") is None
     wait.until(
         EC.text_to_be_present_in_element(
-            (By.XPATH, '//*[@id="status"]'), "Username not found"
+            (By.XPATH, '//*[@id="status"]'),
+            "Podana nazwa użytkownika nie istnieje",
         )
     )
     assert (
-        driver.find_element(By.XPATH, '//*[@id="status"]').text == "Username not found"
+        driver.find_element(By.XPATH, '//*[@id="status"]').text
+        == "Podana nazwa użytkownika nie istnieje"
     )

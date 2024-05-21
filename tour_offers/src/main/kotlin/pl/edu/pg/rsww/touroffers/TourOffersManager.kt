@@ -242,7 +242,7 @@ public class TourOffersManager {
                 append(" selected='selected'")
             }
             append(">")
-            append("Own transport")
+            append("Transport we własnym zakresie")
             append("</option>")
             for (route in routes) {
                 val rawType =
@@ -255,8 +255,8 @@ public class TourOffersManager {
                     }
                 val displayType =
                     when (route.entity_type) {
-                        "BusRoute" -> "Bus"
-                        "FlightRoute" -> "Flight"
+                        "BusRoute" -> "Autokar"
+                        "FlightRoute" -> "Lot"
                         else -> throw IllegalStateException(
                             "routes query only includes above 2 types",
                         )
@@ -278,11 +278,11 @@ public class TourOffersManager {
                 }
                 append(">")
                 append(displayType)
-                append(" from ")
+                append(" z ")
                 append(city)
                 append(" (")
                 append("$freeSeats")
-                append(" free seats)")
+                append(" wolne miejsca)")
                 append("</option>")
             }
         }
