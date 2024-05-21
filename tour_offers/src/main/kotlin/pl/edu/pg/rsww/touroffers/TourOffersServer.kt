@@ -32,21 +32,23 @@ public class TourOffersServer {
         }
 
         if (request.path.contains("trip_details")) {
-            val result = tourOffersManager.getTourDetails(
-                request.params["id"] ?: "",
-                request.params["numPeople"]?.toInt() ?: 0,
-            )
+            val result =
+                tourOffersManager.getTourDetails(
+                    request.params["id"] ?: "",
+                    request.params["numPeople"]?.toInt() ?: 0,
+                )
             if (result == null) {
-                val resp = ResponseMessage(
-                    200,
-                    mapOf("HX-Retarget" to "#container"),
-                    """
+                val resp =
+                    ResponseMessage(
+                        200,
+                        mapOf("HX-Retarget" to "#container"),
+                        """
                     <p>The trip doesn't seem to be available anymore.</p>
                     <button type="button"
                         class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         hx-get="/search.html" hx-target="#container">Go back to tour list</button>
                     """,
-                )
+                    )
                 val rawResp = Json.encodeToString(resp)
                 return rawResp
             }
@@ -56,21 +58,23 @@ public class TourOffersServer {
         }
 
         if (request.path.contains("trip_available_rooms")) {
-            val result = tourOffersManager.getTourAvailableRooms(
-                request.params["id"] ?: "",
-                request.params["numPeople"]?.toInt() ?: 0,
-            )
+            val result =
+                tourOffersManager.getTourAvailableRooms(
+                    request.params["id"] ?: "",
+                    request.params["numPeople"]?.toInt() ?: 0,
+                )
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
             return rawResp
         }
 
         if (request.path.contains("transport_options")) {
-            val result = tourOffersManager.getTransportOptions(
-                request.params["id"] ?: "",
-                request.params["numPeople"]?.toInt() ?: 0,
-                request.params["route_id"] ?: "",
-            )
+            val result =
+                tourOffersManager.getTransportOptions(
+                    request.params["id"] ?: "",
+                    request.params["numPeople"]?.toInt() ?: 0,
+                    request.params["route_id"] ?: "",
+                )
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
             return rawResp

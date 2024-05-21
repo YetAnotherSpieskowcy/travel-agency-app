@@ -98,7 +98,7 @@ public class TourOffersManager {
                                         text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all 
                                         hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none 
                                         disabled:opacity-50 disabled:shadow-none"
-                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&numPeople=${numPeople}" hx-target="#container" handlebars-template="trip_details"
+                                        hx-get="/api/tour_offers/trip_details/?id=${d.entity_id}&numPeople=$numPeople" hx-target="#container" handlebars-template="trip_details"
                                         hx-swap="innerHTML" value="Szczegóły">
                                 </div>
                             </div>
@@ -172,7 +172,11 @@ public class TourOffersManager {
         return result
     }
 
-    fun getTransportOptions(id: String, numPeople: Int, default: String): String {
+    fun getTransportOptions(
+        id: String,
+        numPeople: Int,
+        default: String,
+    ): String {
         val client = MongoClient.create(connectionString = connectionString)
         val db = client.getDatabase(databaseName = dbName)
 
@@ -188,12 +192,16 @@ public class TourOffersManager {
             return generateOptions(listOf(), default)
         }
 
-        val busRouteIds = tour.data.getList(
-            "hotel_bus_routes", Document::class.javaObjectType
-        ).map { it.getString("id") }
-        val flightRouteIds = tour.data.getList(
-            "hotel_flight_routes", Document::class.javaObjectType
-        ).map { it.getString("id") }
+        val busRouteIds =
+            tour.data.getList(
+                "hotel_bus_routes",
+                Document::class.javaObjectType,
+            ).map { it.getString("id") }
+        val flightRouteIds =
+            tour.data.getList(
+                "hotel_flight_routes",
+                Document::class.javaObjectType,
+            ).map { it.getString("id") }
 
         val routes =
             db.getCollection<Entity>(
@@ -208,7 +216,7 @@ public class TourOffersManager {
                         Filters.eq(Entity::entity_type.name, "FlightRoute"),
                         Filters.`in`(Entity::entity_id.name, flightRouteIds),
                     ),
-                )
+                ),
             ).toList().filter {
                 val limit = it?.data?.getDouble("reservation_limit") ?: 0.0
                 val count = it?.data?.getDouble("reservation_count") ?: limit
@@ -222,7 +230,10 @@ public class TourOffersManager {
         return result
     }
 
-    private fun generateOptions(routes: List<Entity>, default: String): String {
+    private fun generateOptions(
+        routes: List<Entity>,
+        default: String,
+    ): String {
         return buildString {
             val optionValue = "own"
             append("<option")
@@ -234,25 +245,28 @@ public class TourOffersManager {
             append("Own transport")
             append("</option>")
             for (route in routes) {
-                val rawType = when (route.entity_type) {
-                    "BusRoute" -> "bus"
-                    "FlightRoute" -> "flight"
-                    else -> throw IllegalStateException(
-                        "routes query only includes above 2 types"
-                    )
-                }
-                val displayType = when (route.entity_type) {
-                    "BusRoute" -> "Bus"
-                    "FlightRoute" -> "Flight"
-                    else -> throw IllegalStateException(
-                        "routes query only includes above 2 types"
-                    )
-                }
-                val city = if (route.entity_type == "BusRoute") {
-                    route.data.getString("origin_bus_stop_city")
-                } else {
-                    route.data.getString("origin_airport_city")
-                }
+                val rawType =
+                    when (route.entity_type) {
+                        "BusRoute" -> "bus"
+                        "FlightRoute" -> "flight"
+                        else -> throw IllegalStateException(
+                            "routes query only includes above 2 types",
+                        )
+                    }
+                val displayType =
+                    when (route.entity_type) {
+                        "BusRoute" -> "Bus"
+                        "FlightRoute" -> "Flight"
+                        else -> throw IllegalStateException(
+                            "routes query only includes above 2 types",
+                        )
+                    }
+                val city =
+                    if (route.entity_type == "BusRoute") {
+                        route.data.getString("origin_bus_stop_city")
+                    } else {
+                        route.data.getString("origin_airport_city")
+                    }
                 val limit = route?.data?.getDouble("reservation_limit") ?: 0.0
                 val count = route?.data?.getDouble("reservation_count") ?: limit
                 val freeSeats = limit - count
