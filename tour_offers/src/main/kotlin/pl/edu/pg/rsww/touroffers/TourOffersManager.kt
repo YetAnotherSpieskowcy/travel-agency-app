@@ -81,6 +81,18 @@ public class TourOffersManager {
         if (destCities != null) {
             var n = 0
             for (d in destCities) {
+                val cityName = d.data.getString("hotel_destination_city_title")
+                val countryName = d.data?.getString("hotel_destination_country_title")
+                var des: String = ""
+                if(cityName != null && cityName !=""){
+                    des += cityName
+                    if(countryName != null && countryName != ""){
+                        des += ", "
+                    }
+                }
+                if (countryName != null && countryName != ""){
+                    des += countryName
+                }
                 result +=
                     """
                             <div class="my-3 rounded-md outline-1 box-border border-2 shadow-md flex justify-between gap-x-6 py-5 flex min-w-0 gap-x-4 space-x-4 px-5">
@@ -88,9 +100,7 @@ public class TourOffersManager {
                                     <p class="break-afer-auto text-sm font-semibold leading-6 text-gray-900">
                                         ${d.data?.getString("title") ?: "Coś poszło nie tak..."}</p>
                                     <p class="mt-1 truncate text-xs leading-5 text-gray-500">
-                                        ${d.data?.getString(
-                        "hotel_destination_city_title",
-                    ) + "," ?: ""} ${d.data?.getString("hotel_destination_country_title")}</p>
+                                        ${des}</p>
                                 </div>
                                 <div>
                                     <input type="button"
@@ -109,7 +119,7 @@ public class TourOffersManager {
         }
         if (result == "") {
             result = """<div>
-                <p class="break-afer-auto text-sm font-semibold leading-6 text-gray-900">
+                <p name="noResults" class="break-afer-auto text-sm font-semibold leading-6 text-gray-900">
                     Brak wyników    
                 </p>
             </div>"""
