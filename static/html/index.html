@@ -66,6 +66,8 @@
 						<dd id="available-room-count" class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
 							hx-get="/api/tour_offers/trip_available_rooms?id={{id}}&numPeople={{numPeople}}" hx-swap="innerHTML"
 							hx-trigger="every 5s" hx-indicator="#indicator-ignore">{{availableRooms}}</dd>
+						<span hx-get="/api/status/poll_purchase_event?tripId={{id}}" hx-indicator="#indicator-ignore"
+							hx-trigger="every 1s"></span>
 					</div>
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt class="text-sm font-medium leading-6 text-gray-900">Data wyjazdu</dt>
@@ -128,11 +130,12 @@
 				</form>
 				<div>
 					Tę wycieczkę aktualnie ogląda <span hx-get="/api/status/get_observer_count?tripId={{id}}"
-						hx-trigger="load delay:1s, every 10s"></span> klient(ów).
+						hx-trigger="load delay:1s, every 10s" hx-indicator="#indicator-ignore"></span> klient(ów).
 				</div>
 			</div>
 		</div>
-		<span hx-get="/api/status/update_observer?tripId={{id}}" hx-trigger="load" hx-swao="outerHTML"></span>
+		<span hx-get="/api/status/update_observer?tripId={{id}}" hx-indicator="#indicator-ignore" hx-trigger="load"
+			hx-swap="outerHTML"></span>
 		<script type="text/javascript">
 			(() => {
 				let roomCountElement = document.getElementById("available-room-count")
