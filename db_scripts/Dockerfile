@@ -3,7 +3,7 @@ FROM mongo:4.4.9 as mongo
 
 USER root
 
-RUN apt-get update \
+RUN apt-get -o Acquire::AllowInsecureRepositories=true update \
     && apt-get install -y --no-install-recommends postgresql-client=12+214ubuntu0.1 \
     && rm -rf /var/lib/apt/lists/*
 

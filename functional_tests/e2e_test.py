@@ -105,7 +105,7 @@ def test_not_buy(driver):
     return_button = lambda: driver.find_element(By.XPATH, '//*[@id="cancel-button"]')
     return_button().click()
 
-    wait.until(EC.presence_of_element_located((By.ID, "results")))
+    wait.until(EC.presence_of_element_located((By.ID, "destination")))
     results = lambda: driver.find_element(By.ID, "results")
     assert (  # Test if list is empty
         results().find_element(By.TAG_NAME, "p").text
