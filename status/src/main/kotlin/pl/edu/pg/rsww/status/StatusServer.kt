@@ -13,6 +13,12 @@ import kotlinx.html.stream.createHTML
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.javatime.timestamp
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.amqp.rabbit.annotation.Queue
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import java.time.Instant
@@ -20,6 +26,14 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 data class Observer(val observerId: String, val tripId: String, val timestamp: String)
+
+object Events : Table("events") {
+    val id = long("id").autoIncrement("public.seq").uniqueIndex()
+    val entityId = uuid("entity_id")
+    val eventName = varchar("event_name", 255)
+    val data = varchar("data", 255)
+    val change_time = timestamp("change_time")
+}
 
 public class StatusServer {
     fun getDbCollection(func: (MongoCollection<Observer>) -> Unit) {
@@ -46,6 +60,28 @@ public class StatusServer {
             val update = set("timestamp", Instant.now())
             collection.updateOne(keyfilter, update, UpdateOptions().upsert(true))
         }
+    }
+
+    fun getPurchaseStatus(tripId: String): Long {
+        val pdbName = System.getenv("POSTGRES_DB")
+        val phost = System.getenv("POSTGRES_HOSTB")
+        val pport = System.getenv("POSTGRES_PORTB")
+        Database.connect(
+            url = "jdbc:postgresql://$phost:$pport/$pdbName",
+            driver = "org.postgresql.Driver",
+            user = System.getenv("POSTGRES_USERNAME"),
+            password = System.getenv("POSTGRES_PASSWORD"),
+        )
+        var count: Long = 0
+        transaction {
+            val result =
+                Events.select {
+                    (Events.change_time greaterEq Instant.now().minus(10, ChronoUnit.SECONDS)) and
+                        (Events.entityId eq UUID.fromString(tripId))
+                }
+            count = result.count()
+        }
+        return count
     }
 
     fun getObserverCount(tripId: String): Long {
@@ -79,6 +115,17 @@ public class StatusServer {
                     attributes["hx-trigger"] = "every 5s"
                     attributes["hx-swap"] = "outerHTML"
                 }
+            val resp = ResponseMessage(200, emptyMap(), result)
+            val rawResp = Json.encodeToString(resp)
+            return rawResp
+        }
+        if (request.path.contains("poll_purchase_event")) {
+            val tripId = request.params["tripId"] ?: ""
+            val count = getPurchaseStatus(tripId)
+            var result = ""
+            if (count > 0) {
+                result = "Inny klient właśnie zakupił tę wycieczkę!"
+            }
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
             return rawResp
