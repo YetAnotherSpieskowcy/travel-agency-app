@@ -56,6 +56,11 @@ public class TourOffersServer {
             val rawResp = Json.encodeToString(resp)
             return rawResp
         }
+        if (request.path.contains("dest_preferences")) {
+            val resp = ResponseMessage(200, emptyMap(), tourOffersManager.getTripPreferences())
+            val rawResp = Json.encodeToString(resp)
+            return rawResp
+        }
 
         if (request.path.contains("trip_available_rooms")) {
             val result =
