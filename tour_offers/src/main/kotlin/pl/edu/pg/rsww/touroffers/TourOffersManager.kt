@@ -3,6 +3,7 @@ package pl.edu.pg.rsww.touroffers
 import com.mongodb.client.model.Accumulators.sum
 import com.mongodb.client.model.Aggregates.group
 import com.mongodb.client.model.Aggregates.limit
+import com.mongodb.client.model.Aggregates.match
 import com.mongodb.client.model.Aggregates.sort
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Sorts.descending
@@ -259,6 +260,47 @@ public class TourOffersManager {
         return result
     }
 
+    fun getDetailPreferences(tripId: String): String {
+        val userName = System.getenv("MONGO_USERNAME")
+        val password = System.getenv("MONGO_PASSWORD")
+        val dbName = System.getenv("MONGO_DB")
+        val host = System.getenv("MONGO_HOSTB")
+        val port = System.getenv("MONGO_PORTB")
+
+        val connectionString = "mongodb://$userName:$password@$host:$port/"
+        val client = MongoClient.create(connectionString)
+        val db = client.getDatabase(dbName)
+        val collection = db.getCollection<Document>("preferences")
+        val pipeline =
+            listOf(
+                match(Filters.eq(PreferencesPayload::tripId.name, tripId)),
+                group(
+                    Document()
+                        .append(PreferencesPayload::mealType.name, "\$${PreferencesPayload::mealType.name}")
+                        .append(PreferencesPayload::routeId.name, "\$${PreferencesPayload::routeId.name}")
+                        .append(PreferencesPayload::room.name, "\$${PreferencesPayload::room.name}"),
+                    sum("count", 1),
+                ),
+                sort(descending("count")),
+                limit(1),
+            )
+        val result = collection.aggregate(pipeline).firstOrNull()
+        var output = ""
+
+        if (result != null) {
+            val groupKey = result.get("_id") as Document
+            val room = groupKey.getString(PreferencesPayload::room.name)
+            val routeId = groupKey.getString(PreferencesPayload::routeId.name)
+            val mealType = groupKey.getString(PreferencesPayload::mealType.name)
+            output = "Inni klienci byli zainteresowanie tą konfiguracją: $room, $routeId, $mealType"
+        }
+        val html =
+            """<div hx-get="/api/tour_offers/detail_preferences?tripId=$tripId" hx-trigger="every 3s" hx-swap="outerHTML">$output</div>"""
+
+        client.close()
+        return html
+    }
+
     public fun getTripPreferences(): String {
         val userName = System.getenv("MONGO_USERNAME")
         val password = System.getenv("MONGO_PASSWORD")
@@ -314,7 +356,7 @@ public class TourOffersManager {
         }
         val label = if (output.isEmpty()) "" else "Polecane:"
         val html =
-            """<div hx-get="/api/tour_offers/dest_preferences" hx-trigger="every 30s" hx-targer="outerHTML">$label $output</div>"""
+            """<div hx-get="/api/tour_offers/dest_preferences" hx-trigger="every 3s" hx-swap="outerHTML">$label $output</div>"""
 
         client.close()
         return html

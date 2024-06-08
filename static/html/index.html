@@ -2,21 +2,25 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+	<meta charset="utf-8">
 	<title>Travel agency app</title>
 	<style>
 		.htmx-settling {
-		    opacity: 0;
+			opacity: 0;
 		}
+
 		.htmx-indicator {
 			display: none !important;
 		}
-		 .htmx-request.htmx-indicator {
+
+		.htmx-request.htmx-indicator {
 			display: block !important;
 		}
+
 		img {
-		    transition: opacity 300ms ease-in;
+			transition: opacity 300ms ease-in;
 		}
+
 		#indicator-ignore {
 			display: none !important;
 		}
@@ -31,14 +35,15 @@
 	<span hx-get="/api/test" hx-trigger="load"></span>
 	<button type="button" hx-get="/api/auth/logout">Wyloguj się</button>
 	<div class="relative" hx-indicator="#processing-overlay">
-		<div id="processing-overlay" class="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center htmx-indicator">
+		<div id="processing-overlay"
+			class="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center htmx-indicator">
 			<div class="flex items-center">
 				<span class="text-3xl mr-4">Przetwarzanie...</span>
 				<svg class="animate-spin h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none"
-		        viewBox="0 0 24 24">
+					viewBox="0 0 24 24">
 					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 					<path class="opacity-75" fill="currentColor"
-		          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
 					</path>
 				</svg>
 			</div>
@@ -58,13 +63,9 @@
 				<dl class="divide-y divide-gray-100 py-2">
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt class="text-sm font-medium leading-6 text-gray-900">Pozostała liczba pokoi</dt>
-						<dd id="available-room-count"
-							class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
-							hx-get="/api/tour_offers/trip_available_rooms?id={{id}}&numPeople={{numPeople}}"
-							hx-swap="innerHTML"
-							hx-trigger="every 5s"
-							hx-indicator="#indicator-ignore"
-						>{{availableRooms}}</dd>
+						<dd id="available-room-count" class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
+							hx-get="/api/tour_offers/trip_available_rooms?id={{id}}&numPeople={{numPeople}}" hx-swap="innerHTML"
+							hx-trigger="every 5s" hx-indicator="#indicator-ignore">{{availableRooms}}</dd>
 					</div>
 					<div class="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt class="text-sm font-medium leading-6 text-gray-900">Data wyjazdu</dt>
@@ -74,6 +75,7 @@
 						<dt class="text-sm font-medium leading-6 text-gray-900">Data powrotu</dt>
 						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{end_date}}</dd>
 					</div>
+					<div hx-get="/api/tour_offers/detail_preferences?tripId={{id}}" hx-trigger="load" hx-swap="outerHTML"></div>
 				</dl>
 				<button type="button"
 					class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
@@ -85,15 +87,9 @@
 				<div class="py-4">
 					<span id="trip-price">Cena nieznana, ładowanie...</span>
 				</div>
-				<form
-					id="trip-reservation-form"
-					hx-get="/api/price_calculator/calculate_price"
-					hx-trigger="load, every 5s, change"
-					hx-target="#trip-price"
-					hx-indicator="#indicator-ignore"
-					hx-include="#trip-reservation-form"
-					handlebars-template="trip-price-template"
-				>
+				<form id="trip-reservation-form" hx-get="/api/price_calculator/calculate_price"
+					hx-trigger="load, every 5s, change" hx-target="#trip-price" hx-indicator="#indicator-ignore"
+					hx-include="#trip-reservation-form" handlebars-template="trip-price-template">
 					<input type="hidden" name="trip_id" value="{{id}}" />
 					<input type="hidden" name="destLatitude" value="{{geolocation.lat}}" />
 					<input type="hidden" name="destLongitude" value="{{geolocation.lng}}" />
@@ -102,15 +98,9 @@
 					<input type="hidden" name="hotelRating" value="{{hotel_rating}}" />
 					<label class="block py-3">
 						<span class="block text-sm font-medium text-slate-700">Transport</span>
-						<select
-							name="route_id"
-							hx-get="/api/tour_offers/transport_options?id={{id}}&numPeople={{numPeople}}"
-							hx-trigger="load, every 5s"
-							hx-target="this"
-							hx-swap="innerHTML"
-							hx-indicator="#indicator-ignore"
-							handlebars-template="unset"
-						>
+						<select name="route_id" hx-get="/api/tour_offers/transport_options?id={{id}}&numPeople={{numPeople}}"
+							hx-trigger="load, every 5s" hx-target="this" hx-swap="innerHTML" hx-indicator="#indicator-ignore"
+							handlebars-template="unset">
 							<option value='own'>Transport we własnym zakresie</option>
 						</select>
 					</label>
@@ -130,16 +120,10 @@
 							{{/each}}
 						</select>
 					</label>
-					<button
-						type="button"
-						id="start-reservation-btn"
+					<button type="button" id="start-reservation-btn"
 						class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-						hx-get="/api/trip_reservations/start_reservation"
-						hx-include="#trip-reservation-form"
-						hx-target="#container"
-						hx-indicator="#processing-overlay"
-						handlebars-template="active-reservation"
-					>
+						hx-get="/api/trip_reservations/start_reservation" hx-include="#trip-reservation-form" hx-target="#container"
+						hx-indicator="#processing-overlay" handlebars-template="active-reservation">
 						Rozpocznij rezerwację
 					</button>
 				</form>
@@ -169,49 +153,41 @@
 			Rezerwacja aktywna, czas pozostały na zakup:
 			<span id="reservation-time-left">60 sekund</span>
 		</div>
-		<form
-			id="purchase-form"
-			hx-get="/api/trip_reservations/confirm_reservation"
-			hx-target="#container"
-			class="py-4"
-		>
+		<form id="purchase-form" hx-get="/api/trip_reservations/confirm_reservation" hx-target="#container" class="py-4">
 			<input type="hidden" name="sagaId" value="{{sagaId}}" />
-			<button
-				type="submit"
-				class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-			>
+			<button type="submit"
+				class="flex select-none items-center gap-3 rounded-lg border border-blue-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-blue-500 transition-all hover:opacity-75 focus:ring focus:ring-blue-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
 				Zakup ofertę
 			</button>
 		</form>
-		<button id="cancel-button"
-			type="button"
+		<button id="cancel-button" type="button"
 			class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 			hx-get="/search.html" hx-target="#container">Powróć do wyszukiwarki wycieczek</button>
 		<script type="text/javascript">
-			(() => {
-				let reservedUntil = Date.parse("{{{reserved_until}}}");
-				let interval = setInterval(() => {
-					let now = new Date().getTime()
-					let duration = reservedUntil - now
-					let seconds = Math.floor(duration / 1000)
-					if (seconds < 0) {
+				(() => {
+					let reservedUntil = Date.parse("{{{reserved_until}}}");
+					let interval = setInterval(() => {
+						let now = new Date().getTime()
+						let duration = reservedUntil - now
+						let seconds = Math.floor(duration / 1000)
+						if (seconds < 0) {
+							clearInterval(interval)
+							let el = document.getElementById("purchase-form")
+							el.remove()
+							el = document.getElementById("reservation-status")
+							el.innerHTML = "Rezerwacja wygasła"
+							return
+						}
+						let el = document.getElementById("reservation-time-left")
+						el.innerHTML = `${seconds} sekund`
+					}, 1000)
+					document.getElementById("cancel-button").addEventListener("click", (e) => {
 						clearInterval(interval)
-						let el = document.getElementById("purchase-form")
-						el.remove()
-						el = document.getElementById("reservation-status")
-						el.innerHTML = "Rezerwacja wygasła"
-						return
-					}
-					let el = document.getElementById("reservation-time-left")
-					el.innerHTML = `${seconds} sekund`
-				}, 1000)
-				document.getElementById("cancel-button").addEventListener("click", (e) => {
-					clearInterval(interval)
-				})
-				document.getElementById("purchase-form").addEventListener("submit", (e) => {
-					clearInterval(interval)
-				})
-			})()
+					})
+					document.getElementById("purchase-form").addEventListener("submit", (e) => {
+						clearInterval(interval)
+					})
+				})()
 		</script>
 	</template>
 	<template id="trip-price-template">
@@ -219,7 +195,7 @@
 	</template>
 
 	<script type="text/javascript">
-		Handlebars.registerHelper("stars", function(hotelRating) {
+		Handlebars.registerHelper("stars", function (hotelRating) {
 			console.log(hotelRating)
 			console.log(Math.floor(hotelRating / 10))
 			console.log(hotelRating % 10)
