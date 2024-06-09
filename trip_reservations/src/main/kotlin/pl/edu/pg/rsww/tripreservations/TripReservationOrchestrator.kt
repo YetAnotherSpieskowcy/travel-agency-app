@@ -2,6 +2,9 @@ package pl.edu.pg.rsww.tripreservations
 
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.amqp.core.Message
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import java.time.Instant
@@ -220,6 +223,25 @@ public class TripReservationOrchestrator(
         sendConfirmPurchase()
     }
 
+    fun setTripPurchasedEvent(tripId: String) {
+        val pdbName = System.getenv("POSTGRES_DB")
+        val phost = System.getenv("POSTGRES_HOSTB")
+        val pport = System.getenv("POSTGRES_PORTB")
+        Database.connect(
+            url = "jdbc:postgresql://$phost:$pport/$pdbName",
+            driver = "org.postgresql.Driver",
+            user = System.getenv("POSTGRES_USERNAME"),
+            password = System.getenv("POSTGRES_PASSWORD"),
+        )
+        transaction {
+            Events.insert {
+                it[Events.entityId] = UUID.fromString(tripId)
+                it[Events.eventName] = "TripPurchased"
+                it[Events.data] = """NA"""
+            }
+        }
+    }
+
     fun sendConfirmPurchase() {
         println("J")
         val newState = State.SENT_CONFIRM_PURCHASE
@@ -273,6 +295,7 @@ public class TripReservationOrchestrator(
                 """,
             )
         } else {
+            setTripPurchasedEvent(tripId)
             sendHttpResponse(
                 template,
                 continuationMessage ?: message,
