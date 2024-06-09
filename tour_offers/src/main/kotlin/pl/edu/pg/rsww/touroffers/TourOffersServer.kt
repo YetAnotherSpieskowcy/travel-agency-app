@@ -90,6 +90,17 @@ public class TourOffersServer {
             val rawResp = Json.encodeToString(resp)
             return rawResp
         }
+
+        if (request.path.contains("multiplier")) {
+            val result =
+                tourOffersManager.getTourMultiplier(
+                    request.params["id"] ?: "",
+                    request.params["numPeople"]?.toInt() ?: 0,
+                )
+            val resp = ResponseMessage(200, emptyMap(), result)
+            val rawResp = Json.encodeToString(resp)
+            return rawResp
+        }
         return Json.encodeToString(ResponseMessage(200, emptyMap(), """{ "error": "404" }"""))
     }
 }
