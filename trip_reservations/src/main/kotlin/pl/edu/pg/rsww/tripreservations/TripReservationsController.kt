@@ -84,6 +84,7 @@ public class TripReservationController(
                 }
             }
         }
+        client.close()
         return result
     }
 
@@ -126,6 +127,7 @@ public class TripReservationController(
                 }
             }
         }
+        client.close()
         return result
     }
 
