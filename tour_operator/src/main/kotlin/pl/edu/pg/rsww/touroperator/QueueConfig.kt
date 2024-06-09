@@ -27,4 +27,10 @@ public class QueueConfig {
         get() = "$externalTransactionBookTripExchange.transactions.bookTrip"
     val externalEventTripBookedKey
         get() = "trip_reservations.events.tripBooked"
+    val externalTransactionChangeTripMultiplierExchange
+        get() = "trip_reservations"
+    val externalTransactionChangeTripMultiplierKey
+        get() = "$externalTransactionChangeTripMultiplierExchange.transactions.changeTripMultiplier"
+    val externalEventTripMultiplierChangedKey
+        get() = "trip_reservations.events.tripMultiplierChanged"
 }

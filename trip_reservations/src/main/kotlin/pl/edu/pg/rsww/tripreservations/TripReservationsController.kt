@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Filters.lt
 import com.mongodb.client.model.Updates.inc
+import com.mongodb.client.model.Updates.`set`
 import com.mongodb.kotlin.client.MongoClient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -86,6 +87,48 @@ public class TripReservationController(
         return result
     }
 
+    fun updateMultiplierInDb(
+        tripId: String,
+        value: Double,
+    ): Long {
+        val userName = System.getenv("MONGO_USERNAME")
+        val password = System.getenv("MONGO_PASSWORD")
+        val dbName = System.getenv("MONGO_DB")
+        val host = System.getenv("MONGO_HOSTB")
+        val port = System.getenv("MONGO_PORTB")
+
+        val connectionString = "mongodb://$userName:$password@$host:$port/"
+        val client = MongoClient.create(connectionString)
+        val db = client.getDatabase(dbName)
+        val collection = db.getCollection<Entity>("snapshots")
+
+        val tourFilter = eq("entity_id", tripId)
+        val tour = collection.find(tourFilter).firstOrNull() ?: return 0
+
+        val update = `set`("data.multiplier", value)
+
+        var result = collection.updateOne(tourFilter, update).modifiedCount
+        val pdbName = System.getenv("POSTGRES_DB")
+        val phost = System.getenv("POSTGRES_HOSTB")
+        val pport = System.getenv("POSTGRES_PORTB")
+        Database.connect(
+            url = "jdbc:postgresql://$phost:$pport/$pdbName",
+            driver = "org.postgresql.Driver",
+            user = System.getenv("POSTGRES_USERNAME"),
+            password = System.getenv("POSTGRES_PASSWORD"),
+        )
+        if (result > 0) {
+            transaction {
+                Events.insert {
+                    it[Events.entityId] = UUID.fromString(tripId)
+                    it[Events.eventName] = "TripMultiplierChanged"
+                    it[Events.data] = """$value"""
+                }
+            }
+        }
+        return result
+    }
+
     fun bookTrip(msg: BookTripMessage) {
         val result = updateReservationCounter(msg.tripId, 1)
 
@@ -93,6 +136,18 @@ public class TripReservationController(
             queueConfig.base,
             queueConfig.eventTripBooked,
             Json.encodeToString(TripBookedEvent(msg.triggeredBy, msg.userId, msg.tripId, result)),
+        )
+    }
+
+    fun changeTripMultiplier(msg: ChangeTripMultiplierMessage) {
+        val result = updateMultiplierInDb(msg.tripId, msg.newValue)
+
+        template.convertAndSend(
+            queueConfig.base,
+            queueConfig.eventTripMultiplierChanged,
+            Json.encodeToString(
+                TripMultiplierChangedEvent(msg.triggeredBy, msg.tripId, msg.newValue, result)
+            ),
         )
     }
 

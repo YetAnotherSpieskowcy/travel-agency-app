@@ -32,6 +32,12 @@ public class TourOperatorServer {
     val port = System.getenv("MONGO_PORTB")
     val connectionString = "mongodb://$userName:$password@$host:$port/"
 
+    // Trip details:
+    // - Title: Hotel AP Cabanas Beach & Nature
+    // - To: Algarve
+    // - Date: 2024-06-30
+    val specialTripId = "a4610c19-4fad-4166-b852-ac9c81747634"
+
     val recentChanges = ArrayDeque<String>(10)
     val pendingChanges = HashMap<String, String>()
     var changeSimulatorEnabled = false
@@ -106,8 +112,26 @@ public class TourOperatorServer {
         val client = MongoClient.create(connectionString = connectionString)
         val db = client.getDatabase(databaseName = dbName)
 
-        // TODO: change multiplier of a fixed tour for presentation
-        // (+ exclude it from below changes)
+        // change multiplier of a fixed trip to allow us to present the feature more easily
+        val specialTrip =
+            db.getCollection<Entity>(
+                "snapshots",
+            )
+                .find(
+                    Filters.and(
+                        Filters.eq(Entity::entity_type.name, "Tour"),
+                        Filters.eq(Entity::entity_id.name, specialTripId),
+                    )
+                )
+                .toList()
+                .firstOrNull()
+
+        if (specialTrip == null) {
+            println("Could not fetch the special trip")
+            return
+        }
+
+        changeMultiplier(specialTrip)
 
         val available =
             db.getCollection<Entity>("snapshots").find(Filters.eq(Entity::entity_type.name, "Hotel"))
@@ -120,6 +144,7 @@ public class TourOperatorServer {
             db.getCollection<Entity>("snapshots").find(
                 Filters.and(
                     Filters.eq(Entity::entity_type.name, "Tour"),
+                    Filters.ne(Entity::entity_id.name, specialTripId),
                 ),
             )
                 .toList()
@@ -129,20 +154,8 @@ public class TourOperatorServer {
                 }
 
         for (trip in trips.take(3)) {
-            val bookTripMsg = BookTripMessage(
-                UUID.randomUUID().toString(), "unimportant", trip.entity_id
-            )
-            val title = trip.data.getString("title")
-            pendingChanges[bookTripMsg.triggeredBy] = (
-                "Liczba rezerwacji wycieczki '$title' (${trip.entity_id}) zwiększona o 1"
-            )
-            template.convertAndSend(
-                queueConfig.externalTransactionBookTripExchange,
-                queueConfig.externalTransactionBookTripKey,
-                Json.encodeToString(bookTripMsg),
-            )
-            // TODO: multiplier change
-            val newMultiplier = Random.nextDouble(1.0, 5.0)
+            bookTrip(trip)
+            changeMultiplier(trip)
         }
 
         // Not entirely sure if this is something that tour operator should generate
@@ -151,6 +164,37 @@ public class TourOperatorServer {
             queueConfig.externalTransactionBookTransportKey,
             Json.encodeToString(BookTransportMessage("unimportant", "unimportant", "<TODO>")),
         )*/
+    }
+
+    fun changeMultiplier(trip: Entity) {
+        val newMultiplier = Random.nextDouble(1.0, 5.0)
+        val msg = ChangeTripMultiplierMessage(
+            UUID.randomUUID().toString(), trip.entity_id, newMultiplier
+        )
+        val title = trip.data.getString("title")
+        pendingChanges[msg.triggeredBy] = (
+            "Mnożnik dla wycieczki '$title' (${trip.entity_id}) zmieniony na ${newMultiplier}"
+        )
+        template.convertAndSend(
+            queueConfig.externalTransactionChangeTripMultiplierExchange,
+            queueConfig.externalTransactionChangeTripMultiplierKey,
+            Json.encodeToString(msg),
+        )
+    }
+
+    fun bookTrip(trip: Entity) {
+        val msg = BookTripMessage(
+            UUID.randomUUID().toString(), "unimportant", trip.entity_id
+        )
+        val title = trip.data.getString("title")
+        pendingChanges[msg.triggeredBy] = (
+            "Liczba rezerwacji wycieczki '$title' (${trip.entity_id}) zwiększona o 1"
+        )
+        template.convertAndSend(
+            queueConfig.externalTransactionBookTripExchange,
+            queueConfig.externalTransactionBookTripKey,
+            Json.encodeToString(msg),
+        )
     }
 
     @RabbitListener(queuesToDeclare = [Queue("#{queueConfig.events}")])
@@ -162,6 +206,10 @@ public class TourOperatorServer {
             queueConfig.externalEventTripBookedKey -> {
                 val event = Json.decodeFromString<TripBookedEvent>(payload)
                 onTripBooked(event)
+            }
+            queueConfig.externalEventTripMultiplierChangedKey -> {
+                val event = Json.decodeFromString<TripMultiplierChangedEvent>(payload)
+                onTripMultiplierChanged(event)
             }
             // Not entirely sure if this is something that tour operator should generate
             /*queueConfig.externalEventTransportBookedKey -> {
@@ -179,13 +227,21 @@ public class TourOperatorServer {
         updateRecentChanges(event.triggeredBy)
     }
 
-    fun onTransportBooked(event: TransportBookedEvent) {
+    fun onTripMultiplierChanged(event: TripMultiplierChangedEvent) {
         if (event.outcome == 0L) {
             return
         }
 
         updateRecentChanges(event.triggeredBy)
     }
+
+    /*fun onTransportBooked(event: TransportBookedEvent) {
+        if (event.outcome == 0L) {
+            return
+        }
+
+        updateRecentChanges(event.triggeredBy)
+    }*/
 
     fun updateRecentChanges(triggeredBy: String) {
         val changeDescription = pendingChanges.remove(triggeredBy)
