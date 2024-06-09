@@ -49,3 +49,9 @@ services:
         context: ./tour_offers
     env_file:
       - ./default.env
+  trip-status:
+    image: ghcr.io/yetanotherspieskowcy/rsww_184529_status
+    build:
+        context: ./status
+    env_file:
+      - ./default.env
