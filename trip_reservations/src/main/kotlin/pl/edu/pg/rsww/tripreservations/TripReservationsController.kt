@@ -146,7 +146,7 @@ public class TripReservationController(
             queueConfig.base,
             queueConfig.eventTripMultiplierChanged,
             Json.encodeToString(
-                TripMultiplierChangedEvent(msg.triggeredBy, msg.tripId, msg.newValue, result)
+                TripMultiplierChangedEvent(msg.triggeredBy, msg.tripId, msg.newValue, result),
             ),
         )
     }

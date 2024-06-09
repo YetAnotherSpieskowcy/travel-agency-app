@@ -74,9 +74,7 @@ class AppConfig {
     }
 
     @Bean
-    fun eventsTripReservationsBinding(
-        eventsQueue: Queue,
-    ): Binding {
+    fun eventsTripReservationsBinding(eventsQueue: Queue): Binding {
         return BindingBuilder.bind(eventsQueue).to(TopicExchange("trip_reservations")).with(
             "trip_reservations.events.*",
         )
