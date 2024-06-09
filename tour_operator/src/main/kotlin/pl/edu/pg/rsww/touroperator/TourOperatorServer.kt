@@ -129,6 +129,7 @@ public class TourOperatorServer {
 
         if (specialTrip == null) {
             println("Could not fetch the special trip")
+            client.close()
             return
         }
 
@@ -166,6 +167,7 @@ public class TourOperatorServer {
             queueConfig.externalTransactionBookTransportKey,
             Json.encodeToString(BookTransportMessage("unimportant", "unimportant", "<TODO>")),
         )*/
+        client.close()
     }
 
     fun changeMultiplier(trip: Entity) {
