@@ -116,6 +116,7 @@ public class TransportsServer {
                 }
             }
         }
+        client.close()
         return result
     }
 }

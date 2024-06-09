@@ -179,6 +179,7 @@ public class TripReservationController(
         val db = client.getDatabase(dbName)
         val collection = db.getCollection<PreferencesPayload>("preferences")
         collection.insertOne(msg.preferences)
+        client.close()
     }
 
     fun confirmPurchase(msg: ConfirmPurchaseMessage) {
