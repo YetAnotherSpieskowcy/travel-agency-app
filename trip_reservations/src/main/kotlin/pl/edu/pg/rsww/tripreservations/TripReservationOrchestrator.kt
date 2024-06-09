@@ -18,6 +18,7 @@ public class TripReservationOrchestrator(
     val userId: String,
     val tripId: String,
     val routeId: String,
+    val preferences: PreferencesPayload,
     val template: RabbitTemplate,
     val queueConfig: QueueConfig,
 ) {
@@ -161,7 +162,7 @@ public class TripReservationOrchestrator(
             queueConfig.base,
             queueConfig.transactionUpdateBookingPreferences,
             // TODO: establish what should be inside this message
-            Json.encodeToString(UpdateBookingPreferencesMessage(sagaId)),
+            Json.encodeToString(UpdateBookingPreferencesMessage(sagaId, preferences)),
         )
     }
 

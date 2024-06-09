@@ -1,5 +1,6 @@
 package pl.edu.pg.rsww.tripreservations
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.springframework.amqp.core.Message
@@ -8,6 +9,14 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import java.net.HttpCookie
+
+@Serializable
+data class PreferencesPayload(
+    val tripId: String,
+    val routeId: String,
+    val mealType: String,
+    val room: String,
+)
 
 public class TripReservationServer(
     @Autowired private val template: RabbitTemplate,
@@ -32,11 +41,19 @@ public class TripReservationServer(
             return
         }
         if (request.path == "/start_reservation") {
+            val pref =
+                PreferencesPayload(
+                    tripId = request.params["trip_id"] ?: "",
+                    routeId = request.params["route_id"] ?: "",
+                    mealType = request.params["mealType"] ?: "",
+                    room = request.params["room"] ?: "",
+                )
             controller.startReservation(
                 message = message,
                 userId = userId,
                 tripId = request.params["trip_id"] ?: "",
                 routeId = request.params["route_id"] ?: "",
+                preferences = pref,
             )
             return
         }

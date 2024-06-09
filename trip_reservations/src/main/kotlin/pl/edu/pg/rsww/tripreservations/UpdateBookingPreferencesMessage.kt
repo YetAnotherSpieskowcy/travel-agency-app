@@ -5,4 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 public data class UpdateBookingPreferencesMessage(
     val triggeredBy: String,
+    val preferences: PreferencesPayload,
 )

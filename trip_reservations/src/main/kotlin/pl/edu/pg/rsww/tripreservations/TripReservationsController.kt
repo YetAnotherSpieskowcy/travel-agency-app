@@ -105,17 +105,23 @@ public class TripReservationController(
         )
     }
 
-    fun getPreferences() {
-        // TODO: implement actual logic
-    }
-
     fun updateBookingPreferences(msg: UpdateBookingPreferencesMessage) {
         template.convertAndSend(
             queueConfig.base,
             queueConfig.eventBookingPreferencesUpdated,
             Json.encodeToString(BookingPreferencesUpdatedEvent(msg.triggeredBy)),
         )
-        // TODO: implement actual logic
+        val userName = System.getenv("MONGO_USERNAME")
+        val password = System.getenv("MONGO_PASSWORD")
+        val dbName = System.getenv("MONGO_DB")
+        val host = System.getenv("MONGO_HOSTB")
+        val port = System.getenv("MONGO_PORTB")
+
+        val connectionString = "mongodb://$userName:$password@$host:$port/"
+        val client = MongoClient.create(connectionString)
+        val db = client.getDatabase(dbName)
+        val collection = db.getCollection<PreferencesPayload>("preferences")
+        collection.insertOne(msg.preferences)
     }
 
     fun confirmPurchase(msg: ConfirmPurchaseMessage) {
@@ -137,6 +143,7 @@ public class TripReservationController(
         userId: String,
         tripId: String,
         routeId: String,
+        preferences: PreferencesPayload,
     ) {
         val actualRouteId = routeId.split("_", limit = 2).getOrNull(1) ?: ""
         val orchestrator =
@@ -145,6 +152,7 @@ public class TripReservationController(
                 userId = userId,
                 tripId = tripId,
                 routeId = actualRouteId,
+                preferences = preferences,
                 template = template,
                 queueConfig = queueConfig,
             )
