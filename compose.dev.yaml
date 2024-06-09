@@ -39,3 +39,6 @@ services:
   tour-offers:
     env_file:
       - ./dev.env
+  trip-status:
+    env_file:
+      - ./dev.env
