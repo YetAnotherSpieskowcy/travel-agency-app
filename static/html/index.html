@@ -80,6 +80,7 @@
 						<dt class="text-sm font-medium leading-6 text-gray-900">Data powrotu</dt>
 						<dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{end_date}}</dd>
 					</div>
+					<div hx-get="/api/tour_offers/detail_preferences?tripId={{id}}" hx-trigger="load" hx-swap="outerHTML"></div>
 				</dl>
 				<button type="button"
 					class="flex select-none items-center gap-3 rounded-lg border border-gray-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-500 transition-all hover:opacity-75 focus:ring focus:ring-gray-200 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
