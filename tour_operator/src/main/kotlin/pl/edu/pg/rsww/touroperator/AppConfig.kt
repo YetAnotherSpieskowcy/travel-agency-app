@@ -9,8 +9,10 @@ import org.springframework.amqp.core.TopicExchange
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
+@EnableScheduling
 class AppConfig {
     @Autowired
     lateinit var queueConfig: QueueConfig
@@ -69,6 +71,15 @@ class AppConfig {
         eventsQueue: Queue,
     ): Binding {
         return BindingBuilder.bind(eventsQueue).to(exchange)
+    }
+
+    @Bean
+    fun eventsTripReservationsBinding(
+        eventsQueue: Queue,
+    ): Binding {
+        return BindingBuilder.bind(eventsQueue).to(TopicExchange("trip_reservations")).with(
+            "trip_reservations.events.*",
+        )
     }
 
     @Bean

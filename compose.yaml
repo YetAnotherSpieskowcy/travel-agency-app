@@ -21,6 +21,8 @@ services:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_tour_operator
     build:
         context: ./tour_operator
+    env_file:
+      - ./default.env
   trip-reservations:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_trip_reservations
     build:

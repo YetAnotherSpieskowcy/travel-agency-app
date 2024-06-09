@@ -13,4 +13,18 @@ public class QueueConfig {
 
     val eventPaymentProcessed get() = "$events.paymentProcessed"
     val transactionProcessPayment get() = "$transactions.processPayment"
+
+    val externalTransactionBookTransportExchange
+        get() = "transports"
+    val externalTransactionBookTransportKey
+        get() = "$externalTransactionBookTransportExchange.requests.bookTransport"
+    val externalEventTransportBookedKey
+        get() = "trip_reservations.events.transportBooked"
+
+    val externalTransactionBookTripExchange
+        get() = "trip_reservations"
+    val externalTransactionBookTripKey
+        get() = "$externalTransactionBookTripExchange.transactions.bookTrip"
+    val externalEventTripBookedKey
+        get() = "trip_reservations.events.tripBooked"
 }

@@ -24,6 +24,9 @@ services:
       - "17017:27017"
     build:
       context: ./db_mongo
+  tour-operator:
+    env_file:
+      - ./dev.env
   auth:
     env_file:
       - ./dev.env
