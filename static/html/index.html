@@ -29,7 +29,10 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<span hx-get="/api/test" hx-trigger="load"></span>
-	<button type="button" hx-get="/api/auth/logout">Wyloguj się</button>
+	<div class="flex justify-between gap-x-6">
+		<button type="button" hx-get="/api/auth/logout">Wyloguj się</button>
+		<a href="/recent_changes.html">Ostatnie zmiany</a>
+	</div>
 	<div class="relative" hx-indicator="#processing-overlay">
 		<div id="processing-overlay" class="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center htmx-indicator">
 			<div class="flex items-center">

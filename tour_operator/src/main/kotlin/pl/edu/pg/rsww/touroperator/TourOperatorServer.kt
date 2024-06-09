@@ -64,13 +64,13 @@ public class TourOperatorServer {
         }
         if (request.path == "/enable_change_simulator") {
             changeSimulatorEnabled = true
-            val resp = ResponseMessage(200, mapOf("Content-Type" to "text/html"), "")
+            val resp = ResponseMessage(200, mapOf("Content-Type" to "text/html"), "Włączono")
             val rawResp = Json.encodeToString(resp)
             return rawResp
         }
         if (request.path == "/disable_change_simulator") {
-            changeSimulatorEnabled = true
-            val resp = ResponseMessage(200, mapOf("Content-Type" to "text/html"), "")
+            changeSimulatorEnabled = false
+            val resp = ResponseMessage(200, mapOf("Content-Type" to "text/html"), "Wyłączono")
             val rawResp = Json.encodeToString(resp)
             return rawResp
         }
