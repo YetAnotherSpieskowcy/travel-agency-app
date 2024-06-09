@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+@pytest.mark.order("last")
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_e2e(driver):
     wait = WebDriverWait(driver, 8)
@@ -62,6 +63,7 @@ def test_e2e(driver):
     ]
 
 
+@pytest.mark.order("last")
 @pytest.mark.flaky(retries=2, only_on=[TimeoutException])
 def test_not_buy(driver):
     wait = WebDriverWait(driver, 8)

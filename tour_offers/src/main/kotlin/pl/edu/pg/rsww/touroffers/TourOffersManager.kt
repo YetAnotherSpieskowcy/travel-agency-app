@@ -292,7 +292,31 @@ public class TourOffersManager {
             val room = groupKey.getString(PreferencesPayload::room.name)
             val routeId = groupKey.getString(PreferencesPayload::routeId.name)
             val mealType = groupKey.getString(PreferencesPayload::mealType.name)
-            output = "Inni klienci byli zainteresowanie tą konfiguracją: $room, $routeId, $mealType"
+
+            var transport = "własny"
+            if (routeId != "own") {
+                val id = routeId.split("_")[1]
+                val snapshots = db.getCollection<Entity>("snapshots")
+                val route = snapshots.find(Filters.eq("entity_id", id)).firstOrNull()
+                if (route != null) {
+                    val displayType =
+                        when (route.entity_type) {
+                            "BusRoute" -> "Autokar"
+                            "FlightRoute" -> "Lot"
+                            else -> throw IllegalStateException(
+                                "routes query only includes above 2 types",
+                            )
+                        }
+                    val city =
+                        if (route.entity_type == "BusRoute") {
+                            route.data.getString("origin_bus_stop_city")
+                        } else {
+                            route.data.getString("origin_airport_city")
+                        }
+                    transport = "$displayType z $city"
+                }
+            }
+            output = "Inni klienci byli zainteresowanie tą konfiguracją <br> Pokój: $room, Transport: $transport, Posiłek: $mealType"
         }
         val html =
             """<div hx-get="/api/tour_offers/detail_preferences?tripId=$tripId" hx-trigger="every 3s" hx-swap="outerHTML">$output</div>"""
