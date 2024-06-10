@@ -43,6 +43,7 @@ public class AuthServer {
                         )
                     }
             val rawResp = Json.encodeToString(resp)
+            client.close()
             return rawResp
         }
         if (request.path.contains("logout")) {

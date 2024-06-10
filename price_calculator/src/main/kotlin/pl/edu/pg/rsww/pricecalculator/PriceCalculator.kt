@@ -47,6 +47,7 @@ public class PriceCalculator {
         transportType: String,
         hotelRating: Float,
         mealType: String,
+        multiplier: Float,
     ): Float {
         val distance = calculateDistance(fromGeolocation, destGeolocation)
         var transportPrice = 0
@@ -57,7 +58,7 @@ public class PriceCalculator {
         }
         val mealPrice: Int = mealPrices[mealType] ?: 0
 
-        val price = numPeople * (distance + duration * hotelRating * 10 + transportPrice + mealPrice + 100 / freeSpots)
+        val price = multiplier * numPeople * (distance + duration * hotelRating * 10 + transportPrice + mealPrice + 100 / freeSpots)
 
         return price
     }

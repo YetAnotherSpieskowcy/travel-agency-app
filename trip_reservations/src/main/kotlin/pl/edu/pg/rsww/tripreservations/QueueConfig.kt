@@ -18,6 +18,8 @@ public class QueueConfig {
         get() = "$transactions.bookTrip"
     val transactionCancelBookTrip
         get() = "$transactions.cancelBookTrip"
+    val transactionChangeTripMultiplier
+        get() = "$transactions.changeTripMultiplier"
     val transactionGetPreferences
         get() = "$transactions.getPreferences"
     val transactionUpdateBookingPreferences
@@ -26,6 +28,8 @@ public class QueueConfig {
         get() = "$transactions.confirmPurchase"
     val eventTripBooked
         get() = "$events.tripBooked"
+    val eventTripMultiplierChanged
+        get() = "$events.tripMultiplierChanged"
     val eventTripCanceled
         get() = "$events.tripCanceled"
     val eventTripPurchaseConfirmed

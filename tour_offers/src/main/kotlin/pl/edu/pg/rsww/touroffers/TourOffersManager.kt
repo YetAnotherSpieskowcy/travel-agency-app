@@ -202,6 +202,34 @@ public class TourOffersManager {
         return result
     }
 
+    fun getTourMultiplier(
+        id: String,
+        numPeople: Int,
+    ): String {
+        val client = MongoClient.create(connectionString = connectionString)
+        val db = client.getDatabase(databaseName = dbName)
+
+        val tour =
+            db.getCollection<Entity>(
+                "snapshots",
+            ).find(Filters.and(Filters.eq(Entity::entity_type.name, "Tour"), Filters.eq(Entity::entity_id.name, id)))
+                .toList()
+                .firstOrNull()
+        if (tour == null) {
+            client.close()
+            return """
+            <input hx-get="/api/tour_offers/multiplier?id=$id&numPeople=$numPeople" hx-trigger="every 5s" hx-target="this" handlebars-template="unset" hx-swap="outerHTML" type="hidden" name="multiplier" value="1.0" />
+            """
+        }
+
+        val multiplier = tour.data.getDouble("multiplier")
+
+        client.close()
+        return """
+        <input hx-get="/api/tour_offers/multiplier?id=$id&numPeople=$numPeople" hx-trigger="every 5s" hx-target="this" handlebars-template="unset" hx-swap="outerHTML" type="hidden" name="multiplier" value="$multiplier" />
+        """
+    }
+
     fun getTransportOptions(
         id: String,
         numPeople: Int,

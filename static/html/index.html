@@ -33,7 +33,10 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"></script>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<span hx-get="/api/test" hx-trigger="load"></span>
-	<button type="button" hx-get="/api/auth/logout">Wyloguj się</button>
+	<div class="flex justify-between gap-x-6">
+		<button type="button" hx-get="/api/auth/logout">Wyloguj się</button>
+		<a href="/recent_changes.html">Ostatnie zmiany</a>
+	</div>
 	<div class="relative" hx-indicator="#processing-overlay">
 		<div id="processing-overlay"
 			class="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center htmx-indicator">
@@ -98,6 +101,7 @@
 					<input type="hidden" name="duration" value="{{duration}}" />
 					<input type="hidden" name="numPeople" value="{{numPeople}}" />
 					<input type="hidden" name="hotelRating" value="{{hotel_rating}}" />
+					<input hx-get="/api/tour_offers/multiplier?id={{id}}&numPeople={{numPeople}}" hx-trigger="every 5s" type="hidden" name="multiplier" hx-target="this" hx-swap="outerHTML" handlebars-template="unset" value="{{multiplier}}" />
 					<label class="block py-3">
 						<span class="block text-sm font-medium text-slate-700">Transport</span>
 						<select name="route_id" hx-get="/api/tour_offers/transport_options?id={{id}}&numPeople={{numPeople}}"

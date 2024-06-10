@@ -101,6 +101,10 @@ public class TripReservationServer(
                 val msg = Json.decodeFromString<CancelBookTripMessage>(payload)
                 controller.cancelBookTrip(msg)
             }
+            queueConfig.transactionChangeTripMultiplier -> {
+                val msg = Json.decodeFromString<ChangeTripMultiplierMessage>(payload)
+                controller.changeTripMultiplier(msg)
+            }
             queueConfig.transactionUpdateBookingPreferences -> {
                 val msg = Json.decodeFromString<UpdateBookingPreferencesMessage>(payload)
                 controller.updateBookingPreferences(msg)

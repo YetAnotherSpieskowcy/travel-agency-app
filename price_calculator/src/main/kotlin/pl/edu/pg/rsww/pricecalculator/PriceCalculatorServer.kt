@@ -33,6 +33,7 @@ public class PriceCalculatorServer {
                 transportType = request.params["transportType"] ?: transportType
                 val hotelRating: Int = request.params["hotelRating"]?.toInt() ?: 30
                 val mealType: String = request.params["mealType"] ?: "Bez wy\u017cywienia"
+                val multiplier = (request.params["multiplier"]?.toDouble() ?: 1.0).toFloat()
 
                 val destGeolocation: Geolocation = Geolocation(destLat, destLong)
                 val fromGeolocation: Geolocation = Geolocation(fromLat, fromLong)
@@ -47,6 +48,7 @@ public class PriceCalculatorServer {
                         transportType,
                         hotelRating / 10.0f,
                         mealType,
+                        multiplier,
                     )
 
                 val resp =
