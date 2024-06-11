@@ -9,7 +9,7 @@ from selenium import webdriver
 @pytest.fixture()
 def base_url():
     port = os.environ.get("PYTEST_PORT")
-    port = port if port is not None else "8080"
+    port = port if port is not None else "18452"
     return f"http://localhost:{port}"
 
 
