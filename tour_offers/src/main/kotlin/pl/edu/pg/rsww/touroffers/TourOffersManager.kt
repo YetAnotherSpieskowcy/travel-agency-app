@@ -218,7 +218,7 @@ public class TourOffersManager {
         if (tour == null) {
             client.close()
             return """
-            <input hx-get="/api/tour_offers/multiplier?id=$id&numPeople=$numPeople" hx-trigger="every 5s" hx-target="this" handlebars-template="unset" hx-swap="outerHTML" type="hidden" name="multiplier" value="1.0" />
+            <input hx-get="/api/tour_offers/multiplier?id=$id&numPeople=$numPeople" hx-trigger="every 5s" hx-target="this" handlebars-template="unset" hx-swap="outerHTML" type="hidden" name="multiplier" hx-indicator="#indicator-ignore" value="1.0" />
             """
         }
 
@@ -226,7 +226,7 @@ public class TourOffersManager {
 
         client.close()
         return """
-        <input hx-get="/api/tour_offers/multiplier?id=$id&numPeople=$numPeople" hx-trigger="every 5s" hx-target="this" handlebars-template="unset" hx-swap="outerHTML" type="hidden" name="multiplier" value="$multiplier" />
+        <input hx-get="/api/tour_offers/multiplier?id=$id&numPeople=$numPeople" hx-trigger="every 5s" hx-target="this" handlebars-template="unset" hx-swap="outerHTML" type="hidden" name="multiplier" hx-indicator="#indicator-ignore" value="$multiplier" />
         """
     }
 
@@ -347,7 +347,7 @@ public class TourOffersManager {
             output = "Inni klienci byli zainteresowani tą konfiguracją <br> Pokój: $room, Transport: $transport, Posiłek: $mealType"
         }
         val html =
-            """<div hx-get="/api/tour_offers/detail_preferences?tripId=$tripId" hx-trigger="every 3s" hx-swap="outerHTML">$output</div>"""
+            """<div hx-get="/api/tour_offers/detail_preferences?tripId=$tripId" hx-trigger="every 3s" hx-swap="outerHTML" hx-indicator="#indicator-ignore">$output</div>"""
 
         client.close()
         return html

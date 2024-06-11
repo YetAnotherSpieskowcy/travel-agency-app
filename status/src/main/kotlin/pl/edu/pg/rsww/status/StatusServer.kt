@@ -114,6 +114,7 @@ public class StatusServer {
                     attributes["hx-get"] = "/api/status/update_observer?observerId=$id&tripId=$tripId"
                     attributes["hx-trigger"] = "every 5s"
                     attributes["hx-swap"] = "outerHTML"
+                    attributes["hx-indicator"] = "#indicator-ignore"
                 }
             val resp = ResponseMessage(200, emptyMap(), result)
             val rawResp = Json.encodeToString(resp)
