@@ -2,7 +2,7 @@ services:
   proxy:
     image: ghcr.io/yetanotherspieskowcy/rsww_184529_proxy
     ports:
-      - "8080:80"
+      - "18452:80"
     build: 
       context: ./proxy
       additional_contexts:
