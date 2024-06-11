@@ -2,6 +2,10 @@
 
 Implementation of a system for servicing customers interested in purchasing tourist offers using a microservices architecture.
 
+## Note about sample data
+
+For the duration of the project, the sample data was tracked in a private submodule. To generate this data, the [Tour Operator Scraper](https://github.com/YetAnotherSpieskowcy/travel-agency-tools/tree/main/scraper) and [Tour Operator Sample Data Generator] from the [travel-agency-tools repository](https://github.com/YetAnotherSpieskowcy/travel-agency-tools) should be used.
+
 ## Running services
 
 To run all services, simply use the `dev-run` make target:
