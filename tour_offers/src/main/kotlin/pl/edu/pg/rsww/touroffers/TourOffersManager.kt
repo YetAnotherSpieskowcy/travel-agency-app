@@ -408,7 +408,7 @@ public class TourOffersManager {
         }
         val label = if (output.isEmpty()) "" else "Polecane:"
         val html =
-            """<div hx-get="/api/tour_offers/dest_preferences" hx-trigger="every 3s" hx-swap="outerHTML">$label $output</div>"""
+            """<div hx-get="/api/tour_offers/dest_preferences" hx-trigger="every 3s" hx-swap="outerHTML" hx-indicator="#indicator-ignore">$label $output</div>"""
 
         client.close()
         return html
