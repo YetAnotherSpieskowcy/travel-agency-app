@@ -22,7 +22,7 @@ and then deploy the stack by using the `prod-run` make target (done on cluster m
 make prod-run
 ```
 
-Site will be available at port 8080.
+Site will be available at port 18452.
 
 > [!NOTE]
 > You can modify the default (weak) DB credentials by defining `production.env` file
